@@ -3,29 +3,31 @@ using System.Linq.Expressions;
 
 namespace ECS
 {
+	[Serializable]
 	public class Entity
 	{
 		private static int IdCounter = 0;
-		private World worldState;
+		[NonSerialized]
+		private EntityManager _entityManager;
 
-		internal Entity(World worldState)
+		internal Entity(World world)
 		{
-			this.worldState = worldState;
+			_entityManager = world.EntityManager;
 			Id = IdCounter++;
-			worldState.AddEntity(this);
+			_entityManager.AddEntity(this);
 		}
 
 		public int Id { get; }
 
 		public string Name { get; internal set; }
 
-		public Entity AddComponent(IComponent component)
+		public Entity AddComponent(IComponentData component)
 		{
-			worldState.AddComponent(Id, component);
+			_entityManager.AddComponent(Id, component);
 			return this;
 		}
 
-		public Entity AddComponents(params IComponent[] components)
+		public Entity AddComponents(params IComponentData[] components)
 		{
 			foreach (var component in components)
 			{
@@ -35,36 +37,40 @@ namespace ECS
 			return this;
 		}
 
-		public Entity AddComponent<T>() where T : IComponent, new()
+		public Entity AddComponent<T>() where T : IComponentData, new()
 		{
-			worldState.AddComponent(Id, new T());
+			_entityManager.AddComponent(Id, new T());
 			return this;
 		}
 
 		public void RemoveComponent<T>()
 		{
-			worldState.RemoveComponent(Id, typeof(T));
+			_entityManager.RemoveComponent(Id, typeof(T));
 		}
 
-		public T GetComponent<T>() where T : IComponent
+		public T GetComponent<T>() where T : IComponentData
 		{
-			return worldState.GetComponent<T>(Id);
+			return _entityManager.GetComponent<T>(Id);
 		}
 
-		public IComponent GetComponent(Type type)
+		public IComponentData GetComponent(Type type)
 		{
-			return worldState.GetComponent(Id, type);
+			return _entityManager.GetComponent(Id, type);
 		}
 
 		public bool ContainsComponent(Type type)
 		{
-			return worldState.ContainsComponent(Id, type);
+			return _entityManager.ContainsComponent(Id, type);
 		}
 
 		public bool ContainsComponent<T>()
 		{
-			return worldState.ContainsComponent(Id, typeof(T));
+			return _entityManager.ContainsComponent(Id, typeof(T));
 		}
 
+		public override string ToString()
+		{
+			return $"Name: {Name}, ID: {Id}";
+		}
 	}
 }

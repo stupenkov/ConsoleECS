@@ -57,5 +57,10 @@ namespace ECS.Numerics
 		{
 			return base.GetHashCode();
 		}
+
+		public override string ToString()
+		{
+			return $"X: {X}, Y: {Y}";
+		}
 	}
 }

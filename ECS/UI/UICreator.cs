@@ -10,15 +10,17 @@ namespace ECS.UI
 	public class UICreator
 	{
 		private World _world;
+		private EntityManager _entityManager;
 
 		public UICreator(World world)
 		{
 			_world = world;
+			_entityManager = world.EntityManager;
 		}
 
 		public Entity CreateColorBar(Vector3 position)
 		{
-			Entity entity = _world.CreateEntity($"ColorBar");
+			Entity entity = _entityManager.CreateEntity($"ColorBar");
 			entity.AddComponents(
 				new TransformComponent { Position = position },
 				new SpriteComponent { Bitmap = CreateBitmapColorPanel() });
@@ -28,7 +30,7 @@ namespace ECS.UI
 
 		public Entity CreateLabel(string text, Vector2 position, ColorMask mask)
 		{
-			Entity entity = _world.CreateEntity($"Lable");
+			Entity entity = _entityManager.CreateEntity($"Lable");
 			entity.AddComponents(
 				new TransformComponent { Position = new Vector3(position.X, position.Y, 0) },
 				new LableComponent { Text = text, Mask = mask });
@@ -48,7 +50,7 @@ namespace ECS.UI
 
 		public Entity CreateTextEdit(Vector2 position, int lenght)
 		{
-			Entity entity = _world.CreateEntity($"TextEdit");
+			Entity entity = _entityManager.CreateEntity($"TextEdit");
 			entity.AddComponents(
 				new TransformComponent
 				{
@@ -96,7 +98,7 @@ namespace ECS.UI
 				bitmap.SetPixel(bitmap.Width - 1, i, pixel);
 			}
 
-			Entity entity = _world.CreateEntity($"ModalDialog");
+			Entity entity = _entityManager.CreateEntity($"ModalDialog");
 			entity.AddComponents(
 				new TransformComponent { Position = new Vector3(position.X, position.Y, -1) },
 				new SpriteComponent { Bitmap = bitmap},

@@ -7,24 +7,24 @@ using ECS.Numerics;
 
 namespace ECS.UI
 {
-	public class DecorationUIComponent : IComponent
+	public class DecorationUIComponent : IComponentData
 	{
 		public Vector2 Size = new Vector2(3, 3);
 		public Pixel Border = new Pixel { BackgroundColor = ConsoleColor.White, Symbol = '+', Color = ConsoleColor.Black };
 		public ConsoleColor BackgroundColor = ConsoleColor.DarkBlue;
 	}
 
-	public class ModalDialogComponent : IComponent { public List<Entity> InnerEntities = new List<Entity>(); }
+	public class ModalDialogComponent : IComponentData { public List<Entity> InnerEntities = new List<Entity>(); }
 
-	public class TextEditComponent : IComponent { public string Text; }
+	public class TextEditComponent : IComponentData { public string Text; }
 
-	public class CursorZone : IComponent { public Rectangle Zone; }
+	public class CursorZone : IComponentData { public Rectangle Zone; }
 
-	public class StepperComponent : IComponent { public Pixel Mask; }
+	public class StepperComponent : IComponentData { public Pixel Mask; }
 
-	public class LableComponent : IComponent { public string Text; public ColorMask Mask; }
+	public class LableComponent : IComponentData { public string Text; public ColorMask Mask; }
 
-	public class MenuListComponent : IComponent
+	public class MenuListComponent : IComponentData
 	{
 		public List<string> Items = new List<string>();
 		public ColorMask ColorElement;

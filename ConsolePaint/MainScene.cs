@@ -27,11 +27,11 @@ namespace ConsolePaint
 
 		protected override void RegisterEntities(World world)
 		{
-			_colorBPanel = world.CreateEntity("ColorPanelB");
-			_colorFPanel = world.CreateEntity("ColorPanelF");
-			_canvas = world.CreateEntity("Canvas");
+			_colorBPanel = EntityManager.CreateEntity("ColorPanelB");
+			_colorFPanel = EntityManager.CreateEntity("ColorPanelF");
+			_canvas = EntityManager.CreateEntity("Canvas");
 			_UICreator = new UICreator(world);
-			_menuList = world.CreateEntity("MenuList");
+			_menuList = EntityManager.CreateEntity("MenuList");
 		}
 
 		protected override void ConfigureEntities()
@@ -41,8 +41,6 @@ namespace ConsolePaint
 			Entity clbrBackgrd = _UICreator.CreateColorBar(new Vector3(18, 0, 0));
 			Entity lbTextColor = _UICreator.CreateLabel("Text color:", new Vector2(0, 2));
 			Entity clbrTextColor = _UICreator.CreateColorBar(new Vector3(18, 2, 0));
-			Entity dlgMenu = _UICreator.CreateModalDialog(new Vector2(10, 10));
-			dlgMenu.AddComponent<MenuComponent>();
 
 			_menuList.AddComponents(
 				new TransformComponent
@@ -74,32 +72,6 @@ namespace ConsolePaint
 				});
 		}
 
-		private void ConfigureBColorPanel()
-		{
-			Bitmap colorPanelBitmap = CreateBitmapColorPanel();
-			NavigateComponent colorPanelNavigate = new NavigateComponent();
-			colorPanelNavigate.Navigate.Add(ConsoleKey.Spacebar, _canvas);
-
-			_colorBPanel.AddComponents(
-				new TransformComponent(),
-				new ColorPanelComponent { PanelType = ColorPanelType.Background },
-				new SpriteComponent { Bitmap = colorPanelBitmap },
-				colorPanelNavigate);
-		}
-
-		private void ConfigureFColorPanel()
-		{
-			Bitmap colorPanelBitmap = CreateBitmapColorPanel();
-			NavigateComponent colorPanelNavigate = new NavigateComponent();
-			colorPanelNavigate.Navigate.Add(ConsoleKey.Spacebar, _canvas);
-
-			_colorFPanel.AddComponents(
-				new TransformComponent(),
-				new ColorPanelComponent { PanelType = ColorPanelType.Foreground },
-				new SpriteComponent { Bitmap = colorPanelBitmap },
-				colorPanelNavigate);
-		}
-
 		private void ConfigureCanvas()
 		{
 			Bitmap canvasBitmap = new Bitmap(20, 10);
@@ -117,20 +89,6 @@ namespace ConsolePaint
 				new BrushComponent { Pixel = new Pixel { Color = ConsoleColor.Red } },
 				canvasNavigate,
 				new CanvasComponent());
-		}
-
-		private Bitmap CreateBitmapColorPanel()
-		{
-			Bitmap colorPanelBitmap = new Bitmap(16, 1);
-			Pixel p = colorPanelBitmap.GetPixel(0, 0);
-			p.Color = ConsoleColor.White;
-			p.Symbol = 'B';
-			colorPanelBitmap.SetPixel(0, 0, p);
-			colorPanelBitmap.Foreach((int x, int y, ref Pixel p) =>
-			{
-				p.BackgroundColor = (ConsoleColor)x;
-			});
-			return colorPanelBitmap;
 		}
 	}
 }

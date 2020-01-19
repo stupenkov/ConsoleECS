@@ -9,6 +9,8 @@ namespace ECS
 	{
 		private Scene scene;
 
+		public World World => scene.World;
+
 		public Game(Scene scene)
 		{
 			foreach (var item in Assembly.GetEntryAssembly().GetTypes())
@@ -30,6 +32,7 @@ namespace ECS
 			while (IsRun)
 			{
 				scene.World.RunSystems();
+
 				action?.Invoke();
 				Thread.Sleep(1);
 			}

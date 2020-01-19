@@ -17,5 +17,10 @@ namespace ECS.Drawing
 			BackgroundColor = 0;
 			Symbol = '\0';
 		}
+
+		public override string ToString()
+		{
+			return $"Color: {Color}, Background color: {BackgroundColor}, Symbol: {Symbol}";
+		}
 	}
 }

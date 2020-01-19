@@ -12,6 +12,7 @@ namespace ConsolePaint
 		{
 			MainScene mainScene = new MainScene();
 			Game game = new Game(mainScene);
+			DataTransfer dataTransfer = new DataTransfer(game.World);
 			game.GameLoop(() => {
 
 				

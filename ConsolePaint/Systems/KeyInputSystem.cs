@@ -34,13 +34,23 @@ namespace ConsolePaint.Systems
 
 			if (Input.Key == ConsoleKey.Enter)
 			{
-				Entities.Has(typeof(ActiveComponent)).Foreach((Entity entity) =>
+				Entities.Foreach((Entity entity, ActiveComponent active, MenuListComponent menuList) =>
+				{
+					if (active.PreviousActive != null)
+					{
+						active.PreviousActive.AddComponent<ActiveComponent>();
+						entity.RemoveComponent<ActiveComponent>();
+					}
+				});
+
+				Entities.Exclude(typeof(MenuListComponent)).Foreach((Entity entity, ActiveComponent active) =>
 				{
 					entity.RemoveComponent<ActiveComponent>();
-				});
-				Entities.Has(typeof(MenuListComponent)).Foreach((Entity entity) =>
-				{
-					entity.AddComponent<ActiveComponent>();
+
+					Entities.Has(typeof(MenuListComponent)).Foreach((Entity entity) =>
+					{
+						entity.AddComponent(new ActiveComponent { PreviousActive = entity });
+					});
 				});
 			}
 
@@ -54,7 +64,7 @@ namespace ConsolePaint.Systems
 					}
 					else
 					{
-						menuList.SelectedIndex ++;
+						menuList.SelectedIndex++;
 					}
 				});
 			}
@@ -65,7 +75,7 @@ namespace ConsolePaint.Systems
 				{
 					if (menuList.SelectedIndex == 0)
 					{
-						menuList.SelectedIndex = menuList.Items.Count-1;
+						menuList.SelectedIndex = menuList.Items.Count - 1;
 					}
 					else
 					{

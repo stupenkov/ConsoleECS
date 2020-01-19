@@ -7,7 +7,14 @@ namespace ECS
 {
 	public abstract class Scene
 	{
+		public Scene()
+		{
+			EntityManager = World.EntityManager;
+		}
+
 		public Rendering Rendering { get; set; } = new Rendering(70, 30);
+
+		protected EntityManager EntityManager { get; }
 
 		internal World World { get; } = new World();
 

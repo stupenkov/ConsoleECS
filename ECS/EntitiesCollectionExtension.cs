@@ -38,7 +38,7 @@ namespace ECS
 		}
 
 		public static void Foreach<T1>(this IEnumerable<Entity> entities, Action<Entity, T1> action)
-			where T1 : IComponent
+			where T1 : IComponentData
 		{
 			foreach (var entity in entities.ToList())
 			{
@@ -53,8 +53,8 @@ namespace ECS
 		}
 
 		public static void Foreach<T1, T2>(this IEnumerable<Entity> entities, Action<Entity, T1, T2> action)
-			where T1 : IComponent
-			where T2 : IComponent
+			where T1 : IComponentData
+			where T2 : IComponentData
 		{
 			foreach (var entity in entities.ToList())
 			{
@@ -70,9 +70,9 @@ namespace ECS
 		}
 
 		public static void Foreach<T1, T2, T3>(this IEnumerable<Entity> entities, Action<Entity, T1, T2, T3> action)
-			where T1 : IComponent
-			where T2 : IComponent
-			where T3 : IComponent
+			where T1 : IComponentData
+			where T2 : IComponentData
+			where T3 : IComponentData
 		{
 			foreach (var entity in entities.ToList())
 			{
@@ -90,9 +90,9 @@ namespace ECS
 
 		private static void CheckType(Type[] componentTypes)
 		{
-			if (!componentTypes.All(x => x.GetInterface(nameof(IComponent)) != null))
+			if (!componentTypes.All(x => x.GetInterface(nameof(IComponentData)) != null))
 			{
-				throw new Exception($"Тип аргумента не соответствует типу {nameof(IComponent)}");
+				throw new Exception($"Тип аргумента не соответствует типу {nameof(IComponentData)}");
 			}
 		}
 	}
