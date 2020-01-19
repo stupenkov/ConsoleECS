@@ -14,9 +14,14 @@ namespace ConsolePaint
 
 		public Vector2 GetSize()
 		{
+			if (entities.Count < 1)
+			{
+				throw new Exception($"Нет ни одного элемента для расчета размеров {this}");
+			}
+
 			int x = entities.Max(x => x.GetComponent<TransformComponent>().Position.X + x.GetComponent<TransformComponent>().Size.X);
 			int y = entities.Max(x => x.GetComponent<TransformComponent>().Position.Y + x.GetComponent<TransformComponent>().Size.Y);
-			return new Vector2(x , y );
+			return new Vector2(x, y + 1);
 		}
 
 		public void Add(Entity entity)
@@ -46,7 +51,7 @@ namespace ConsolePaint
 				var entityMaxY = entities.OrderBy(x => x.GetComponent<TransformComponent>().Position.Y).LastOrDefault();
 				var modifyTransform = entityMaxY.GetComponent<TransformComponent>();
 				var transform = GetNormalizeTransform(entity);
-			
+
 				transform.Position.X = 0;
 				transform.Position.Y = modifyTransform.Position.Y + modifyTransform.Size.Y + shift;
 				entities.Add(entity);

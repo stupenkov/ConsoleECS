@@ -7,6 +7,7 @@ using ECS.Numerics;
 
 namespace ECS.BasicElemets
 {
+	[GroupRenderingSystems]
 	internal class RenderingSystem : SystemBase
 	{
 		private IRendering _rendering;
@@ -20,7 +21,7 @@ namespace ECS.BasicElemets
 		{
 			Entities
 				.Has(typeof(TransformComponent))
-				.OrderByDescending(x => x.GetComponent<TransformComponent>().Position.Y)
+				.OrderBy(x => x.GetComponent<TransformComponent>().Position.Y)
 				.Foreach((Entity etity, TransformComponent transform, SpriteComponent sprite) =>
 				{
 					if (transform.Position.Z < 0)

@@ -30,6 +30,11 @@ namespace ECS.Drawing
 		{
 		}
 
+		public static Bitmap CreateFromText(string text, ColorMask mask)
+		{
+			return CreateFromText(text, mask.ColorText, mask.Background);
+		}
+
 		public static Bitmap CreateFromText(string text, ConsoleColor color = ConsoleColor.Green, ConsoleColor background = ConsoleColor.Black)
 		{
 			Bitmap bitmap = new Bitmap(text.Length, 1);
@@ -48,6 +53,11 @@ namespace ECS.Drawing
 			using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryFormatter bf = new BinaryFormatter();
 			return (Bitmap)bf.Deserialize(fs);
+		}
+
+		public Bitmap GetCopy()
+		{
+			return (Bitmap)MemberwiseClone();
 		}
 
 		public void Clear()

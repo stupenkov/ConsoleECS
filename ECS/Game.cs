@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
 
 namespace ECS
@@ -9,6 +11,14 @@ namespace ECS
 
 		public Game(Scene scene)
 		{
+			foreach (var item in Assembly.GetEntryAssembly().GetTypes())
+			{
+				if (item.BaseType == typeof(SystemBase))
+				{
+					Debug.Print(item.Name); 
+				}
+
+			}
 			this.scene = scene;
 		}
 

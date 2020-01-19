@@ -17,4 +17,10 @@ namespace ConsolePaint.Components
 	public class CanvasComponent : IComponent { }
 	public class ColorPanelComponent : IComponent { public ColorPanelType PanelType; }
 	public class BrushComponent : IComponent { public Pixel Pixel; public bool IsBackground = true; public bool IsForeground = true; public bool IsSymbol = true; }
+
+	public class MenuComponent: IComponent
+	{
+
+	}
+
 }

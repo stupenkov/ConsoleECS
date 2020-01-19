@@ -16,9 +16,39 @@ namespace ECS.UI
 			_world = world;
 		}
 
+		public Entity CreateColorBar(Vector3 position)
+		{
+			Entity entity = _world.CreateEntity($"ColorBar");
+			entity.AddComponents(
+				new TransformComponent { Position = position },
+				new SpriteComponent { Bitmap = CreateBitmapColorPanel() });
+
+			return entity;
+		}
+
+		public Entity CreateLabel(string text, Vector2 position, ColorMask mask)
+		{
+			Entity entity = _world.CreateEntity($"Lable");
+			entity.AddComponents(
+				new TransformComponent { Position = new Vector3(position.X, position.Y, 0) },
+				new LableComponent { Text = text, Mask = mask });
+
+			return entity;
+		}
+
+		public Entity CreateLabel(string text, Vector2 position)
+		{
+			return CreateLabel(text, position, ColorMask.Default);
+		}
+
+		public Entity CreateLabel(string text)
+		{
+			return CreateLabel(text, Vector2.Zero);
+		}
+
 		public Entity CreateTextEdit(Vector2 position, int lenght)
 		{
-			Entity entity = _world.CreateEntity($"TextEdti");
+			Entity entity = _world.CreateEntity($"TextEdit");
 			entity.AddComponents(
 				new TransformComponent
 				{
@@ -68,10 +98,25 @@ namespace ECS.UI
 
 			Entity entity = _world.CreateEntity($"ModalDialog");
 			entity.AddComponents(
-				new TransformComponent { Position = new Vector3(position.X, position.Y, int.MaxValue) },
-				new SpriteComponent());
+				new TransformComponent { Position = new Vector3(position.X, position.Y, -1) },
+				new SpriteComponent { Bitmap = bitmap},
+				modalDialogComponent);
 
 			return entity;
+		}
+
+		private Bitmap CreateBitmapColorPanel()
+		{
+			Bitmap colorPanelBitmap = new Bitmap(16, 1);
+			Pixel p = colorPanelBitmap.GetPixel(0, 0);
+			p.Color = ConsoleColor.White;
+			p.Symbol = 'B';
+			colorPanelBitmap.SetPixel(0, 0, p);
+			colorPanelBitmap.Foreach((int x, int y, ref Pixel p) =>
+			{
+				p.BackgroundColor = (ConsoleColor)x;
+			});
+			return colorPanelBitmap;
 		}
 	}
 }

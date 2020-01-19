@@ -13,8 +13,6 @@ namespace ECS
 
 		protected abstract void Inject(DependencyInjection injection);
 
-		protected abstract void RegisterSystems(World world);
-
 		protected abstract void RegisterEntities(World world);
 
 		protected abstract void ConfigureEntities();
@@ -26,16 +24,6 @@ namespace ECS
 
 			RegisterEntities(World);
 			ConfigureEntities();
-
-			World.AddSystem<NavigateSystem>();
-
-			World.AddSystem<CreatorSpriteUISystem>();
-			World.AddSystem<RenderingSystem>();
-
-			World.AddSystem<SetCursorSystem>();
-			World.AddSystem<InputSystem>();
-
-			RegisterSystems(World);
 		}
 	}
 }

@@ -8,10 +8,21 @@ namespace ECS.Input
 		private static Vector2 cursorPos;
 		private static Vector2 begin;
 		private static Vector2 end = new Vector2(Console.BufferWidth - 1, Console.BufferHeight - 1);
+		private static bool _enable = true;
 
 		static Cursor()
 		{
 			TranslateToOrigin();
+		}
+
+		public static bool Enable
+		{
+			get => _enable;
+			set
+			{
+				_enable = value;
+				Console.CursorVisible = value;
+			}
 		}
 
 		public static Vector2 GlobalPosition { get => cursorPos; }
@@ -46,6 +57,11 @@ namespace ECS.Input
 
 		public static void MoveLeft()
 		{
+			if (!Enable)
+			{
+				return;
+			}
+
 			if (cursorPos.X > Begin.X)
 			{
 				cursorPos.X--;
@@ -56,6 +72,11 @@ namespace ECS.Input
 
 		public static void MoveRight()
 		{
+			if (!Enable)
+			{
+				return;
+			}
+
 			if (cursorPos.X < End.X)
 			{
 				cursorPos.X++;
@@ -66,6 +87,11 @@ namespace ECS.Input
 
 		public static void MoveUp()
 		{
+			if (!Enable)
+			{
+				return;
+			}
+
 			if (cursorPos.Y > Begin.Y)
 			{
 				cursorPos.Y--;
@@ -76,6 +102,11 @@ namespace ECS.Input
 
 		public static void MoveDown()
 		{
+			if (!Enable)
+			{
+				return;
+			}
+
 			if (cursorPos.Y < End.Y)
 			{
 				cursorPos.Y++;

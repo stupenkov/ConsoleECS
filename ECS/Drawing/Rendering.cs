@@ -1,4 +1,5 @@
 ﻿using System;
+using ECS.Input;
 using ECS.Numerics;
 
 namespace ECS.Drawing
@@ -43,7 +44,10 @@ namespace ECS.Drawing
 				}
 			});
 			Console.SetCursorPosition(curpos.X, curpos.Y);
-			Console.CursorVisible = true;
+			if (Cursor.Enable)
+			{
+				Console.CursorVisible = true;
+			}
 		}
 
 		public void InitializeView(int width, int height)

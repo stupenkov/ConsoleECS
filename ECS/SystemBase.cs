@@ -6,10 +6,12 @@ namespace ECS
 	public abstract class SystemBase : ISystem
 	{
 		private World worldState;
-		
+
 		public IEnumerable<Entity> Entities => WorldState.Entities;
 
 		public KeyBoard Input { get; internal set; }
+
+		public bool Enable { get; set; } = true;
 
 		internal World WorldState
 		{
@@ -29,7 +31,10 @@ namespace ECS
 
 		void ISystem.Execute()
 		{
-			OnUpdate();
+			if (Enable)
+			{
+				OnUpdate();
+			}
 		}
 	}
 }

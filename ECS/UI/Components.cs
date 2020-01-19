@@ -19,4 +19,16 @@ namespace ECS.UI
 	public class TextEditComponent : IComponent { public string Text; }
 
 	public class CursorZone : IComponent { public Rectangle Zone; }
+
+	public class StepperComponent : IComponent { public Pixel Mask; }
+
+	public class LableComponent : IComponent { public string Text; public ColorMask Mask; }
+
+	public class MenuListComponent : IComponent
+	{
+		public List<string> Items = new List<string>();
+		public ColorMask ColorElement;
+		public ColorMask ColorSelect;
+		public int SelectedIndex;
+	}
 }

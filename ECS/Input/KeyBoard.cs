@@ -14,6 +14,12 @@ namespace ECS.Input
 		public ConsoleKey KeyCtrl { get; private set; }
 		public ConsoleKey KeyShift { get; private set; }
 		public char KeyChar { get; private set; }
+
+		public char GetChar()
+		{
+			return (char)Console.Read();
+		}
+
 		public void GetKey()
 		{
 			ConsoleKeyInfo keyInfo = Console.ReadKey(true);

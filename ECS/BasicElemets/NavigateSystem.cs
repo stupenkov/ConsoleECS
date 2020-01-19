@@ -3,6 +3,7 @@ using ECS.Input;
 
 namespace ECS.BasicElemets
 {
+	[UpdateAfter(typeof(InputSystem))]
 	public class NavigateSystem : SystemBase
 	{
 		public override void OnUpdate()

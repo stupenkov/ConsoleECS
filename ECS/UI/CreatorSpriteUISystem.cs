@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Linq;
 using ECS.BasicElemets;
 using ECS.Drawing;
 using ECS.Numerics;
@@ -26,6 +27,30 @@ namespace ECS.UI
 					entity.AddComponent(zone);
 					entity.RemoveComponent<DecorationUIComponent>();
 				});
+
+			// Lable sprite ctreator
+			Entities.Foreach((Entity entity, LableComponent lable) =>
+			{
+				Bitmap bitmap = Bitmap.CreateFromText(lable.Text, lable.Mask);
+				entity.AddComponent(new SpriteComponent { Bitmap = bitmap });
+			});
+
+			// Menu
+			Entities.Foreach((Entity entity, MenuListComponent menuList) =>
+			{
+				int widht = menuList.Items.Max(x => x.Length);
+				int height = menuList.Items.Count;
+				Bitmap bitmap = new Bitmap(widht, height);
+				bitmap.FillColor(menuList.ColorElement.Background);
+				for (int i = 0; i < menuList.Items.Count; i++)
+				{
+					ColorMask mask = menuList.SelectedIndex == i ? menuList.ColorSelect : menuList.ColorElement;
+					Bitmap textBitmap = Bitmap.CreateFromText(menuList.Items[i], mask);
+					bitmap.AddBitmap(0, i, textBitmap);
+				}
+
+				entity.AddComponent(new SpriteComponent { Bitmap = bitmap });
+			});
 		}
 
 		private void PaintBitmap(Bitmap bitmap, DecorationUIComponent decoration)
