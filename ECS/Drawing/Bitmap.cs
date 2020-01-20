@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using ECS.Numerics;
 
 namespace ECS.Drawing
@@ -136,6 +137,11 @@ namespace ECS.Drawing
 					action.Invoke(ref map[x, y]);
 				}
 			}
+		}
+
+		public override string ToString()
+		{
+			return $"Size(width: {Width}, height: {Height})";
 		}
 	}
 }

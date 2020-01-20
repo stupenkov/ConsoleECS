@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Text;
 using ECS.Input;
 
 namespace ECS
@@ -67,7 +68,30 @@ namespace ECS
 					List<string> fieldValues = new List<string>();
 					foreach (var f in fields)
 					{
-						string strField = $"{f.Name} - {f.GetValue(item)}";
+						StringBuilder sb = new StringBuilder();
+						string strField = string.Empty;
+						if (f.FieldType.GetInterface(nameof(IDictionary<object, object>)) != null)
+						{
+							sb.Append("[");
+							foreach (var str in f.GetValue(item) as IEnumerable<KeyValuePair<ConsoleKey, Entity>>)
+							{
+								sb.Append($"{str.Key}:{str.Value    }; ");
+							}
+							strField = $"{f.Name} - {sb.ToString()}]";
+						}
+						else if (f.GetValue(item) is IEnumerable<object>)
+						{
+							sb.Append("[");
+							foreach (var str in f.GetValue(item) as IEnumerable<string>)
+							{
+								sb.Append($"{str}; ");
+							}
+							strField = $"{f.Name} - {sb.ToString()}]";
+						}
+						else
+						{
+							strField = $"{f.Name} - {f.GetValue(item)}";
+						}
 						fieldValues.Add(strField);
 					}
 
