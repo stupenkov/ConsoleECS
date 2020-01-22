@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ECS
 {
-	public class GroupUpdateSystems : Attribute
+	public class GroupUpdateSystemsAttribute : Attribute
 	{
 	}
 }

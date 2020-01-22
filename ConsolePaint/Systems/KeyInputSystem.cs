@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using ConsolePaint.Components;
+using ConsoleUI;
 using ECS;
-using ECS.UI;
 using ECS.BasicElemets;
 using ECS.Input;
 

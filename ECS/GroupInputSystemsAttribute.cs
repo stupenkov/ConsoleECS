@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ECS
 {
-	public class GroupInputSystems : Attribute
+	public class GroupInputSystemsAttribute : Attribute
 	{
 	}
 }

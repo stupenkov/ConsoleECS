@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ECS;
 using ECS.BasicElemets;
 using ECS.Input;
 
-namespace ECS.UI
+namespace ConsoleUI
 {
 	public class UIEventHandlerSystem : SystemBase
 	{

@@ -7,7 +7,8 @@ using ECS.Numerics;
 
 namespace ECS.BasicElemets
 {
-	[GroupRenderingSystems]
+	//[DisableCreation]
+	[GroupRenderingSystemsAttribute]
 	internal class RenderingSystem : SystemBase
 	{
 		private IRendering _rendering;

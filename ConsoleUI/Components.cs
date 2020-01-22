@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using ECS;
 using ECS.Drawing;
 using ECS.Numerics;
 
-namespace ECS.UI
+namespace ConsoleUI
 {
 	public class DecorationUIComponent : IComponentData
 	{

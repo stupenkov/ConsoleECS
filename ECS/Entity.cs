@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 
 namespace ECS
 {
 	[Serializable]
-	public class Entity
+	public class Entity : ISerializable
 	{
 		private static int IdCounter = 0;
 		[NonSerialized]
@@ -71,6 +72,15 @@ namespace ECS
 		public override string ToString()
 		{
 			return $"Name: {Name}, ID: {Id}";
+		}
+
+		public void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("Name", Name);
+		}
+		protected Entity(SerializationInfo info, StreamingContext context)
+		{
+			Name = info.GetString("Name");
 		}
 	}
 }

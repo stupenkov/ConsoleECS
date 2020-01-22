@@ -10,47 +10,81 @@ namespace ECS
 {
 	public class World
 	{
-		private List<ISystem> _renderingSystems = new List<ISystem>();
-		private List<ISystem> _inputSystems = new List<ISystem>();
-		private List<ISystem> _updateSystems = new List<ISystem>();
-
-		private bool _firstRunSystems = true;
-		private KeyBoard _input = new KeyBoard();
-		private Dictionary<Type, Dictionary<int, IComponentData>> _components = new Dictionary<Type, Dictionary<int, IComponentData>>();
-		private readonly DependencyInjection _injection = new DependencyInjection();
-		private readonly EntityManager _entityManager;
-		private readonly List<Entity> _entities = new List<Entity>();
+		private List<ISystem> _renderingSystemsGroup = new List<ISystem>();
+		private List<ISystem> _inputSystemsGroup = new List<ISystem>();
+		private List<ISystem> _updateSystemsGroup = new List<ISystem>();
 
 		public World()
 		{
-			_entityManager = new EntityManager(this);
-			AddAllComponents();
+			EntityManager = new EntityManager(this);
+			AddAllComponentsTypes();
 		}
 
 		public event EventHandler<List<DataDebug>> UpdateDataDebugs;
 
 		public List<DataDebug> DataDebugs { get; private set; } = new List<DataDebug>();
 
-		public DependencyInjection Injection => _injection;
-		public List<Entity> Entities => _entities;
-		public KeyBoard Input { get => _input; set => _input = value; }
-		public EntityManager EntityManager => _entityManager;
-		internal Dictionary<Type, Dictionary<int, IComponentData>> Components { get => _components; private set => _components = value; }
-		public void RunSystems()
+		public DependencyInjection Injection { get; } = new DependencyInjection();
+
+		public List<Entity> Entities { get; } = new List<Entity>();
+
+		public KeyBoard Input { get; set; } = new KeyBoard();
+
+		public EntityManager EntityManager { get; }
+
+		internal Dictionary<Type, Dictionary<int, IComponentData>> Components { get; private set; } =
+			new Dictionary<Type, Dictionary<int, IComponentData>>();
+
+		internal void InitializeSystems()
 		{
-			if (_firstRunSystems)
+			CreateAllSystems();
+			_updateSystemsGroup.ForEach(x => x.Start());
+			_renderingSystemsGroup.ForEach(x => x.Start());
+			_inputSystemsGroup.ForEach(x => x.Start());
+		}
+
+		internal void RunSystems()
+		{
+			_updateSystemsGroup.ForEach(x => x.Execute());
+			_renderingSystemsGroup.ForEach(x => x.Execute());
+			_inputSystemsGroup.ForEach(x => x.Execute());
+
+			CreateDebugInfo();
+		}
+
+		/// <summary>
+		/// Возвращает все типы систем из подключенных сборок.
+		/// </summary>
+		private static IEnumerable<Type> GetAllTypesSystems() =>
+			GetAllAssemblies()
+			.SelectMany(x => x.GetTypes())
+			.Where(x => x.BaseType == typeof(SystemBase))
+			.Where(x => x.GetCustomAttribute<DisableCreationAttribute>() == null);
+
+		/// <summary>
+		/// Возвращает все сборки приложения.
+		/// </summary>
+		private static IEnumerable<Assembly> GetAllAssemblies()
+		{
+			yield return Assembly.GetEntryAssembly();
+			AssemblyName[] allAssemblyNames = Assembly.GetEntryAssembly().GetReferencedAssemblies();
+			foreach (var asmName in allAssemblyNames)
 			{
-				_firstRunSystems = false;
-				CreateAllSystems();
+				yield return Assembly.Load(asmName);
 			}
+		}
 
-			_updateSystems.ForEach(x => x.Execute());
-			_renderingSystems.ForEach(x => x.Execute());
-			_inputSystems.ForEach(x => x.Execute());
+		/// <summary>
+		/// Возвращает все типы компонентов из подключенных сборок.
+		/// </summary>
+		private static IEnumerable<Type> GetAllComponentTypes() =>
+			GetAllAssemblies()
+			.SelectMany(x => x.GetTypes())
+			.Where(x => x.GetInterface(nameof(IComponentData)) != null);
 
-
-
-			var s = _components.SelectMany(x => x.Value).GroupBy(x => x.Key).Select(x => new
+		private void CreateDebugInfo()
+		{
+			var s = Components.SelectMany(x => x.Value).GroupBy(x => x.Key).Select(x => new
 			{
 				Id = x.Key,
 				Components = EntityManager.GetComponents(x.Key).Values
@@ -104,17 +138,30 @@ namespace ECS
 			UpdateDataDebugs?.Invoke(this, DataDebugs);
 		}
 
+		/// <summary>
+		/// Создает экземпляр системы по ее типу и производит инъекцию.
+		/// </summary>
+		/// <param name="type">Тип системы.</param>
+		/// <returns>Созданная система.</returns>
 		private ISystem CreateSystem(Type type)
 		{
+			if (type.BaseType != typeof(SystemBase))
+			{
+				throw new Exception($"Система не наследует тип: {typeof(SystemBase)}");
+			}
+
 			object instanceObject = Injection.InstanceObject(type);
 			(instanceObject as SystemBase).WorldState = this;
 			(instanceObject as SystemBase).Input = Input;
 			return (ISystem)instanceObject;
 		}
 
+		/// <summary>
+		/// Добавляет экземпляры всех систем в список.
+		/// </summary>
 		private void CreateAllSystems()
 		{
-			IEnumerable<Type> allSystems = GetAllSystems();
+			IEnumerable<Type> allSystems = GetAllTypesSystems();
 
 			foreach (var type in allSystems)
 			{
@@ -132,7 +179,7 @@ namespace ECS
 						$"{nameof(UpdateAfterAttribute)} вместе.");
 				}
 
-				int indexInsert = -1;
+				int indexInsert = systems.Count;
 				if (beforeAttr != null)
 				{
 					indexInsert = systems.FindIndex(s => s.GetType() == beforeAttr.SystemType) - 1;
@@ -142,27 +189,27 @@ namespace ECS
 					indexInsert = systems.FindIndex(s => s.GetType() == afterAttr.SystemType) + 1;
 				}
 
-				if (indexInsert == -1)
-				{
-					indexInsert = systems.Count;
-				}
-
 				ISystem systemInstance = CreateSystem(type);
 
 				systems.Insert(indexInsert, systemInstance);
 			}
 		}
 
+		/// <summary>
+		/// Выбирает группу систем для типа.
+		/// </summary>
+		/// <param name="type">Группа выбирается в зависимости от атрибутов этого типа.</param>
+		/// <returns>Группа систем.</returns>
 		private List<ISystem> SelectGroupSystems(Type type)
 		{
-			List<ISystem> systems = _updateSystems;
-			if (type.GetCustomAttribute(typeof(GroupInputSystems)) != null)
+			List<ISystem> systems = _updateSystemsGroup;
+			if (type.GetCustomAttribute(typeof(GroupInputSystemsAttribute)) != null)
 			{
-				systems = _inputSystems;
+				systems = _inputSystemsGroup;
 			}
-			else if (type.GetCustomAttribute(typeof(GroupRenderingSystems)) != null)
+			else if (type.GetCustomAttribute(typeof(GroupRenderingSystemsAttribute)) != null)
 			{
-				systems = _renderingSystems;
+				systems = _renderingSystemsGroup;
 			}
 
 			if (systems.Any(x => x.GetType() == type))
@@ -173,32 +220,12 @@ namespace ECS
 			return systems;
 		}
 
-		private static IEnumerable<Type> GetAllSystems()
+		/// <summary>
+		/// Добавляет все типы компонентов в словарь.
+		/// </summary>
+		private void AddAllComponentsTypes()
 		{
-			Assembly internalAssembly = Assembly.GetCallingAssembly();
-			Type[] typesInternalAsm = internalAssembly.GetTypes()
-				.Where(x => x.BaseType == typeof(SystemBase)).ToArray();
-
-			Assembly externalAssembly = Assembly.GetEntryAssembly();
-			Type[] typesExternalAsm = externalAssembly.GetTypes()
-				.Where(x => x.BaseType == typeof(SystemBase)).ToArray();
-
-			var allSystems = typesInternalAsm.Union(typesExternalAsm);
-			return allSystems;
-		}
-
-		private void AddAllComponents()
-		{
-			Assembly internalAssembly = Assembly.GetCallingAssembly();
-			Type[] typesInternalAsm = internalAssembly.GetTypes()
-				.Where(x => x.GetInterface(nameof(IComponentData)) != null).ToArray();
-
-			Assembly externalAssembly = Assembly.GetEntryAssembly();
-			Type[] typesExternalAsm = externalAssembly.GetTypes()
-				.Where(x => x.GetInterface(nameof(IComponentData)) != null).ToArray();
-
-			var allComponentsType = typesInternalAsm.Union(typesExternalAsm);
-			foreach (var type in allComponentsType)
+			foreach (var type in GetAllComponentTypes())
 			{
 				Components.Add(type, new Dictionary<int, IComponentData>());
 			}

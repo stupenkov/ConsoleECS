@@ -13,14 +13,6 @@ namespace ECS
 
 		public Game(Scene scene)
 		{
-			foreach (var item in Assembly.GetEntryAssembly().GetTypes())
-			{
-				if (item.BaseType == typeof(SystemBase))
-				{
-					Debug.Print(item.Name); 
-				}
-
-			}
 			this.scene = scene;
 		}
 
@@ -29,6 +21,7 @@ namespace ECS
 		public void GameLoop(Action action)
 		{
 			scene.Run();
+			scene.World.InitializeSystems();
 			while (IsRun)
 			{
 				scene.World.RunSystems();

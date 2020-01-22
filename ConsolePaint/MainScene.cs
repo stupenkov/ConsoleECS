@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using ECS;
 using ECS.BasicElemets;
 using ECS.Drawing;
-using ECS.UI;
 using ConsolePaint.Components;
 using ConsolePaint.Systems;
 using ECS.Numerics;
+using ConsoleUI;
 
 namespace ConsolePaint
 {

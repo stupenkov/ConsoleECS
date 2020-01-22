@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ECS
 {
-	public class GroupRenderingSystems : Attribute
+	public class GroupRenderingSystemsAttribute : Attribute
 	{
 	}
 }

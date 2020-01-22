@@ -6,8 +6,9 @@ using System.Linq;
 using ECS.BasicElemets;
 using ECS.Drawing;
 using ECS.Numerics;
+using ECS;
 
-namespace ECS.UI
+namespace ConsoleUI
 {
 	public class CreatorSpriteUISystem : SystemBase
 	{

@@ -13,15 +13,7 @@ namespace ECS
 
 		public bool Enable { get; set; } = true;
 
-		internal World WorldState
-		{
-			get => worldState;
-			set
-			{
-				worldState = value;
-				OnStart();
-			}
-		}
+		internal World WorldState { get; set; }
 
 		public virtual void OnStart()
 		{
@@ -34,6 +26,14 @@ namespace ECS
 			if (Enable)
 			{
 				OnUpdate();
+			}
+		}
+
+		void ISystem.Start()
+		{
+			if (Enable)
+			{
+				OnStart();
 			}
 		}
 	}
