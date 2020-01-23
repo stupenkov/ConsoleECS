@@ -4,7 +4,6 @@ using System.Text;
 using ConsolePaint.Components;
 using ECS.ConsoleUI;
 using ECS;
-using ECS.BasicElemets;
 using ECS.Input;
 
 namespace ConsolePaint.Systems

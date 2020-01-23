@@ -1,7 +1,7 @@
 ﻿using System;
 using ECS.Input;
 
-namespace ECS.BasicElemets
+namespace ECS.ConsoleUI
 {
 	[GroupInputSystems]
 	public class InputSystem : SystemBase

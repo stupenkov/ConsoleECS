@@ -2,7 +2,7 @@
 using ECS;
 using ECS.Input;
 using ConsolePaint.Components;
-using ECS.BasicElemets;
+using ECS.ConsoleUI;
 
 namespace ConsolePaint.Systems
 {

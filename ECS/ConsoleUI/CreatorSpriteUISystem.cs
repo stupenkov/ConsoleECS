@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Linq;
-using ECS.BasicElemets;
 using ECS.Drawing;
 using ECS.Numerics;
 using ECS;

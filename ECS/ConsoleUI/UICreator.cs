@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using ECS;
-using ECS.BasicElemets;
 using ECS.Drawing;
 using ECS.Numerics;
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ECS;
-using ECS.BasicElemets;
 using ECS.Drawing;
 
 namespace ECS.ConsoleUI

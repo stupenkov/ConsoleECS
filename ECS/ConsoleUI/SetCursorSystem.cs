@@ -1,6 +1,6 @@
 ﻿using ECS.Input;
 
-namespace ECS.BasicElemets
+namespace ECS.ConsoleUI
 {
 	public class SetCursorSystem : SystemBase
 	{

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using ECS;
-using ECS.BasicElemets;
 using ECS.Drawing;
 using ConsolePaint.Components;
-using ConsolePaint.Systems;
 using ECS.Numerics;
 using ECS.ConsoleUI;
 

@@ -5,7 +5,7 @@ using System.Text;
 using ECS.Drawing;
 using ECS.Numerics;
 
-namespace ECS.BasicElemets
+namespace ECS.ConsoleUI
 {
 	//[DisableCreation]
 	[GroupRenderingSystemsAttribute]

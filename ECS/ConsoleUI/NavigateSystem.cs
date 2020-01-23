@@ -1,7 +1,7 @@
 ﻿using ECS;
 using ECS.Input;
 
-namespace ECS.BasicElemets
+namespace ECS.ConsoleUI
 {
 	[UpdateAfter(typeof(InputSystem))]
 	public class NavigateSystem : SystemBase
