@@ -5,7 +5,7 @@ using ECS;
 using ECS.BasicElemets;
 using ECS.Drawing;
 
-namespace ConsoleUI
+namespace ECS.ConsoleUI
 {
 	public class StepperUISystem : SystemBase
 	{

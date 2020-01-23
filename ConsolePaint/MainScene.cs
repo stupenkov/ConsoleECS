@@ -6,7 +6,7 @@ using ECS.Drawing;
 using ConsolePaint.Components;
 using ConsolePaint.Systems;
 using ECS.Numerics;
-using ConsoleUI;
+using ECS.ConsoleUI;
 
 namespace ConsolePaint
 {

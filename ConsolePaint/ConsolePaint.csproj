@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ConsoleUI\ConsoleUI.csproj" />
     <ProjectReference Include="..\ECS\ECS.csproj" />
   </ItemGroup>
 

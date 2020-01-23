@@ -1,6 +1,4 @@
-﻿using ECS.BasicElemets;
-using ECS.Drawing;
-using ECS.Input;
+﻿using ECS.Drawing;
 
 namespace ECS
 {

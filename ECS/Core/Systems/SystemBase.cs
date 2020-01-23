@@ -5,8 +5,6 @@ namespace ECS
 {
 	public abstract class SystemBase : ISystem
 	{
-		private World worldState;
-
 		public IEnumerable<Entity> Entities => WorldState.Entities;
 
 		public KeyBoard Input { get; internal set; }

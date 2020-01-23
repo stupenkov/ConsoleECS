@@ -8,7 +8,7 @@ using ECS.Drawing;
 using ECS.Numerics;
 using ECS;
 
-namespace ConsoleUI
+namespace ECS.ConsoleUI
 {
 	public class CreatorSpriteUISystem : SystemBase
 	{

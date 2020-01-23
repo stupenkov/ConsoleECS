@@ -5,7 +5,7 @@ using ECS;
 using ECS.BasicElemets;
 using ECS.Input;
 
-namespace ConsoleUI
+namespace ECS.ConsoleUI
 {
 	public class UIEventHandlerSystem : SystemBase
 	{

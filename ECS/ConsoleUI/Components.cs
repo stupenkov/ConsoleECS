@@ -6,7 +6,7 @@ using ECS;
 using ECS.Drawing;
 using ECS.Numerics;
 
-namespace ConsoleUI
+namespace ECS.ConsoleUI
 {
 	public class DecorationUIComponent : IComponentData
 	{

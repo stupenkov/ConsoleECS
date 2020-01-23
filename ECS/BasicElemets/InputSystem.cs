@@ -3,7 +3,7 @@ using ECS.Input;
 
 namespace ECS.BasicElemets
 {
-	[GroupInputSystemsAttribute]
+	[GroupInputSystems]
 	public class InputSystem : SystemBase
 	{
 		public override void OnUpdate()

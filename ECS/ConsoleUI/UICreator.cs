@@ -6,7 +6,7 @@ using ECS.BasicElemets;
 using ECS.Drawing;
 using ECS.Numerics;
 
-namespace ConsoleUI
+namespace ECS.ConsoleUI
 {
 	public class UICreator
 	{
