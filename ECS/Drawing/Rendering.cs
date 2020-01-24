@@ -8,13 +8,15 @@ namespace ECS.Drawing
 	{
 		private Bitmap firstBuffer;
 		private Bitmap secondBuffer;
-		private int widthBuffer;
-		private int heightBuffer;
 
 		public Rendering(int width, int height)
 		{
 			InitializeView(width, height);
 		}
+
+		public int WidthBuffer { get; private set; }
+
+		public int HeightBuffer { get; private set; }
 
 		public void AddBitmap(int x, int y, Bitmap bitmap)
 		{
@@ -52,14 +54,14 @@ namespace ECS.Drawing
 
 		public void InitializeView(int width, int height)
 		{
-			widthBuffer = width;
-			heightBuffer = height;
-			firstBuffer = new Bitmap(widthBuffer, heightBuffer);
-			secondBuffer = new Bitmap(widthBuffer, heightBuffer);
+			WidthBuffer = width;
+			HeightBuffer = height;
+			firstBuffer = new Bitmap(WidthBuffer, HeightBuffer);
+			secondBuffer = new Bitmap(WidthBuffer, HeightBuffer);
 
 			Console.SetWindowSize(1, 1);
-			Console.SetBufferSize(widthBuffer, heightBuffer);
-			Console.SetWindowSize(widthBuffer, heightBuffer);
+			Console.SetBufferSize(WidthBuffer, HeightBuffer);
+			Console.SetWindowSize(WidthBuffer, HeightBuffer);
 			Console.ResetColor();
 			Console.Clear();
 		}

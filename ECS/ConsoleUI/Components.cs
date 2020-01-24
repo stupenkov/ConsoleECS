@@ -14,13 +14,6 @@ namespace ECS.ConsoleUI
 	public class CursorLastPositionComponent : IComponentData { public Vector2 Position; public ConsoleKey PressKey; }
 
 	// UI components
-	public class DecorationUIComponentTest : IComponentData
-	{
-		public Vector2 Size = new Vector2(3, 3);
-		public Pixel Border = new Pixel { BackgroundColor = ConsoleColor.White, Symbol = '+', Color = ConsoleColor.Black };
-		public ConsoleColor BackgroundColor = ConsoleColor.DarkBlue;
-	}
-
 	public class ModalDialogComponent : IComponentData { public List<Entity> InnerEntities = new List<Entity>(); }
 
 	public class TextEditComponent : IComponentData { public string Text = string.Empty; public int Length = 5; public ColorMask Mask = ColorMask.Default; }
@@ -31,6 +24,11 @@ namespace ECS.ConsoleUI
 
 	public class ButtonComponent : IComponentData { public string Caption; }
 
+	public class DecorationUIComponent : IComponentData
+	{
+		public Pixel Border= new Pixel { BackgroundColor = ConsoleColor.White, Symbol = '+', Color = ConsoleColor.Black };
+	}
+
 	public class PropertiesUIComponent : IComponentData
 	{
 		public ColorMask Colors = new ColorMask { Background = ConsoleColor.DarkGreen, ColorText = ConsoleColor.White };
@@ -38,16 +36,18 @@ namespace ECS.ConsoleUI
 		public Indent Padding;
 	}
 
-	public class MenuListComponent : IComponentData
+	public class ListItemsComponent : IComponentData
 	{
-		public List<string> Items = new List<string>();
-		public ColorMask ColorElement;
-		public ColorMask ColorSelect;
+		public List<Entity> Items = new List<Entity>();
 		public int SelectedIndex;
 	}
 
+	public class CommandComponent : IComponentData { public string CommandName; }
+
+	//public class InnerComponent: IComponentData { public Entity Parent; }
+
 	// Base components.
-	public class TransformComponent : IComponentData { public Vector3 Position; public Vector2 Size; public bool Autosize = true; }
+	public class TransformComponent : IComponentData { public Vector3 Position; public Vector2 Size; public bool Autosize = true; public bool Center; }
 	public class SpriteComponent : IComponentData { public Bitmap Bitmap; }
 	public class NavigateComponent : IComponentData { public Dictionary<ConsoleKey, Entity> Navigate = new Dictionary<ConsoleKey, Entity>(); }
 	public class ActiveComponent : IComponentData { public Entity PreviousActive; }

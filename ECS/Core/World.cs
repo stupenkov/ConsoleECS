@@ -112,7 +112,7 @@ namespace ECS
 							}
 							strField = $"{f.Name} - {sb.ToString()}]";
 						}
-						else if (f.GetValue(item) is IEnumerable<object>)
+						else if (f.GetValue(item) is IEnumerable<string>)
 						{
 							sb.Append("[");
 							foreach (var str in f.GetValue(item) as IEnumerable<string>)
@@ -199,13 +199,13 @@ namespace ECS
 				else if (beforeAttr != null && afterAttr != null)
 				{
 					int findIndexBefore = sortGroup.FindIndex(s => s.GetType() == beforeAttr.SystemType);
-					int findIndexAfter = sortGroup.FindIndex(s => s.GetType() == beforeAttr.SystemType);
+					int findIndexAfter = sortGroup.FindIndex(s => s.GetType() == afterAttr.SystemType);
 					if (findIndexBefore == -1 || findIndexAfter == -1)
 					{
 						continue;
 					}
 
-					if (findIndexBefore > findIndexAfter)
+					if (findIndexBefore < findIndexAfter)
 					{
 						throw new Exception($"Неправильный порядок систем before: {beforeAttr.SystemType} " +
 							$"и after:{afterAttr.SystemType} в системе: {system.GetType().Name}");

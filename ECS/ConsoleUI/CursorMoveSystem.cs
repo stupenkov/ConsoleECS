@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using ECS.Input;
+using System.Linq;
 
 namespace ECS.ConsoleUI
 {
@@ -22,6 +23,16 @@ namespace ECS.ConsoleUI
 					{
 						entity.RemoveComponent<CursorHoverComponent>();
 					}
+				});
+
+			// Удаляем hover с наложенных компонентов.
+			Entities
+				.Has(typeof(CursorHoverComponent), typeof(TransformComponent))
+				.OrderByDescending(x=>x.GetComponent<TransformComponent>().Position.Z)
+				.Skip(1)
+				.Foreach((Entity entity) =>
+				{
+					entity.RemoveComponent<CursorHoverComponent>();
 				});
 		}
 	}

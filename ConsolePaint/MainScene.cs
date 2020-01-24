@@ -43,35 +43,34 @@ namespace ConsolePaint
 			Entity lbTextColor = _UICreator.CreateLabel("Text color:", new Vector2(0, 7));
 			Entity clbrTextColor = _UICreator.CreateColorBar(new Vector3(18, 7, 0));
 
+			Entity liMenu = _UICreator.CreateListButton(new Vector3(3, 1, 100), 5);
+			liMenu.GetComponent<TransformComponent>().Center = true;
 
-			_menuList.AddComponents(
-				new TransformComponent
-				{
-					Position = new Vector3(10, 10, 10)
-				},
-				new MenuListComponent
-				{
-					Items = new List<string>
-					{
-						"Создать",
-						"Открыть",
-						"Сохранить",
-					},
-					ColorElement = new ColorMask
-					{
-						Background = ConsoleColor.DarkBlue,
-						ColorText = ConsoleColor.White
-					},
-					ColorSelect = new ColorMask
-					{
-						Background = ConsoleColor.Cyan,
-						ColorText = ConsoleColor.DarkRed
-					}
-				},
-				new DecorationUIComponentTest
-				{
 
-				});
+			//_menuList.AddComponents(
+			//	new TransformComponent
+			//	{
+			//		Position = new Vector3(10, 10, 10)
+			//	},
+			//	new ListItemsComponent
+			//	{
+			//		Items = new List<string>
+			//		{
+			//			"Создать",
+			//			"Открыть",
+			//			"Сохранить",
+			//		},
+			//		ColorElement = new ColorMask
+			//		{
+			//			Background = ConsoleColor.DarkBlue,	
+			//			ColorText = ConsoleColor.White
+			//		},
+			//		ColorSelect = new ColorMask
+			//		{
+			//			Background = ConsoleColor.Cyan,
+			//			ColorText = ConsoleColor.DarkRed
+			//		}
+			//	});
 
 			//_textEdit.AddComponents(
 			//	new TransformComponent

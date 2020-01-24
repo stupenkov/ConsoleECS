@@ -74,54 +74,66 @@ namespace ECS.ConsoleUI
 					Size = new Vector2(lenght, 1)
 				},
 				new SpriteComponent(),
-				new DecorationUIComponentTest
-				{
-					Border = new Pixel
-					{
-						BackgroundColor = ConsoleColor.Red,
-						Symbol = '*'
-					}
-				},
 				new TextEditComponent());
 
 			return entity;
 		}
 
-		public Entity CreateModalDialog(Vector2 position)
+		public Entity CreateListButton(Vector3 position, int countItems)
 		{
-			ModalDialogComponent modalDialogComponent = new ModalDialogComponent();
-			DecorationUIComponentTest decoration = new DecorationUIComponentTest();
-			Bitmap bitmap = new Bitmap(decoration.Size);
-			bitmap.FillColor(decoration.BackgroundColor);
-			Pixel pixel = decoration.Border;
-			for (int i = 0; i < bitmap.Width; i++)
+			List<Entity> buttons = new List<Entity>(countItems);
+			for (int i = 0; i < countItems; i++)
 			{
-				bitmap.SetPixel(i, 0, pixel);
+				Entity button = CreateButton(new Vector3(), $"item {i}");
+				button.GetComponent<PropertiesUIComponent>().Padding = new Indent(0, 2);
+				CommandComponent command = new CommandComponent { CommandName = $"commandTest{i}" };
+				button.AddComponent(command);
+				buttons.Add(button);
 			}
 
-			for (int i = 0; i < bitmap.Width; i++)
-			{
-				bitmap.SetPixel(i, bitmap.Height - 1, pixel);
-			}
-
-			for (int i = 0; i < bitmap.Height; i++)
-			{
-				bitmap.SetPixel(0, i, pixel);
-			}
-
-			for (int i = 0; i < bitmap.Height; i++)
-			{
-				bitmap.SetPixel(bitmap.Width - 1, i, pixel);
-			}
-
-			Entity entity = _entityManager.CreateEntity($"ModalDialog");
+			Entity entity = _entityManager.CreateEntity($"ListButtons");
 			entity.AddComponents(
-				new TransformComponent { Position = new Vector3(position.X, position.Y, -1) },
-				new SpriteComponent { Bitmap = bitmap },
-				modalDialogComponent);
-
+				new TransformComponent { Position = position },
+				new ListItemsComponent { Items = buttons },
+				new PropertiesUIComponent());
 			return entity;
 		}
+
+		//public Entity CreateModalDialog(Vector2 position)
+		//{
+		//	ModalDialogComponent modalDialogComponent = new ModalDialogComponent();
+		//	PropertiesUIComponent prop = new PropertiesUIComponent();
+		//	Bitmap bitmap = new Bitmap(prop.Size);
+		//	bitmap.FillColor(prop.BackgroundColor);
+		//	Pixel pixel = prop.Border;
+		//	for (int i = 0; i < bitmap.Width; i++)
+		//	{
+		//		bitmap.SetPixel(i, 0, pixel);
+		//	}
+
+		//	for (int i = 0; i < bitmap.Width; i++)
+		//	{
+		//		bitmap.SetPixel(i, bitmap.Height - 1, pixel);
+		//	}
+
+		//	for (int i = 0; i < bitmap.Height; i++)
+		//	{
+		//		bitmap.SetPixel(0, i, pixel);
+		//	}
+
+		//	for (int i = 0; i < bitmap.Height; i++)
+		//	{
+		//		bitmap.SetPixel(bitmap.Width - 1, i, pixel);
+		//	}
+
+		//	Entity entity = _entityManager.CreateEntity($"ModalDialog");
+		//	entity.AddComponents(
+		//		new TransformComponent { Position = new Vector3(position.X, position.Y, -1) },
+		//		new SpriteComponent { Bitmap = bitmap },
+		//		modalDialogComponent);
+
+		//	return entity;
+		//}
 
 		private Bitmap CreateBitmapColorPanel()
 		{

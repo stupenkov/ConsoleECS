@@ -13,44 +13,22 @@ namespace ECS.ConsoleUI
 	{
 		public override void OnUpdate()
 		{
-			Entities.Foreach((Entity entity, ButtonComponent button, TransformComponent transform) =>
+			Entities.Foreach((Entity entity, ButtonComponent button, TransformComponent transform, PropertiesUIComponent properties) =>
 			{
-				PropertiesUIComponent prop = entity.GetComponent<PropertiesUIComponent>();
-				if (prop == null)
-				{
-					prop = new PropertiesUIComponent();
-					entity.AddComponent(prop);
-				}
-
 				bool isContainsCursorHover = entity.ContainsComponent<CursorHoverComponent>();
-				ColorMask colorMask = isContainsCursorHover ? prop.ActiveColors : prop.Colors;
+				ColorMask colorMask = isContainsCursorHover ? properties.ActiveColors : properties.Colors;
 				StringBuilder sb = new StringBuilder(button.Caption);
-				sb.Insert(0, new string(' ', prop.Padding.Left));
-				sb.Append(new string(' ', prop.Padding.Right));
+				sb.Insert(0, new string(' ', properties.Padding.Left));
+				sb.Append(new string(' ', properties.Padding.Right));
 				Bitmap textBitmap = Bitmap.CreateFromText(sb.ToString(), colorMask);
 
-				int height = prop.Padding.Top + prop.Padding.Bottom + textBitmap.Size.Y;
+				int height = properties.Padding.Top + properties.Padding.Bottom + textBitmap.Size.Y;
 
 				Bitmap bitmap = new Bitmap(new Vector2(sb.Length, height));
 				bitmap.FillColor(colorMask.Background);
-				bitmap.AddBitmap(0, prop.Padding.Top, textBitmap);
+				bitmap.AddBitmap(0, properties.Padding.Top, textBitmap);
 
 				entity.AddComponent(new SpriteComponent { Bitmap = bitmap });
-			});
-		}
-	}
-
-	[GroupInputSystems]
-	public class ButtonUIEventSystem : SystemBase
-	{
-		public override void OnUpdate()
-		{
-			Entities.Has(typeof(ActiveComponent)).Foreach((Entity entity) =>
-			{
-				if (Input.Key == ConsoleKey.Enter)
-				{
-					Debug.Print("Button: click Enter");
-				}
 			});
 		}
 	}

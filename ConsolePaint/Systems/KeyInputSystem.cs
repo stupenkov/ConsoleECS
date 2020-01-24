@@ -34,7 +34,7 @@ namespace ConsolePaint.Systems
 
 			if (Input.Key == ConsoleKey.Enter)
 			{
-				Entities.Foreach((Entity entity, ActiveComponent active, MenuListComponent menuList) =>
+				Entities.Foreach((Entity entity, ActiveComponent active, ListItemsComponent menuList) =>
 				{
 					if (active.PreviousActive != null)
 					{
@@ -43,11 +43,11 @@ namespace ConsolePaint.Systems
 					}
 				});
 
-				Entities.Exclude(typeof(MenuListComponent)).Foreach((Entity entity, ActiveComponent active) =>
+				Entities.Exclude(typeof(ListItemsComponent)).Foreach((Entity entity, ActiveComponent active) =>
 				{
 					entity.RemoveComponent<ActiveComponent>();
 
-					Entities.Has(typeof(MenuListComponent)).Foreach((Entity entity) =>
+					Entities.Has(typeof(ListItemsComponent)).Foreach((Entity entity) =>
 					{
 						entity.AddComponent(new ActiveComponent { PreviousActive = entity });
 					});
@@ -56,7 +56,7 @@ namespace ConsolePaint.Systems
 
 			if (Input.Key == ConsoleKey.DownArrow)
 			{
-				Entities.Has(typeof(ActiveComponent)).Foreach((Entity entity, MenuListComponent menuList) =>
+				Entities.Has(typeof(ActiveComponent)).Foreach((Entity entity, ListItemsComponent menuList) =>
 				{
 					if (menuList.SelectedIndex == menuList.Items.Count - 1)
 					{
@@ -71,7 +71,7 @@ namespace ConsolePaint.Systems
 
 			if (Input.Key == ConsoleKey.UpArrow)
 			{
-				Entities.Has(typeof(ActiveComponent)).Foreach((Entity entity, MenuListComponent menuList) =>
+				Entities.Has(typeof(ActiveComponent)).Foreach((Entity entity, ListItemsComponent menuList) =>
 				{
 					if (menuList.SelectedIndex == 0)
 					{

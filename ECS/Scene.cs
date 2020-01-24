@@ -23,7 +23,7 @@ namespace ECS
 
 		internal void Run()
 		{
-			World.Injection.RegisterType<IRendering>(Rendering);
+			World.Injection.RegisterType<Rendering>(Rendering);
 			Inject(World.Injection);
 
 			RegisterEntities(World);

@@ -10,9 +10,9 @@ namespace ECS.ConsoleUI
 	[GroupRenderingSystems]
 	internal class RenderingSystem : SystemBase
 	{
-		private IRendering _rendering;
+		private Rendering _rendering;
 
-		public RenderingSystem(IRendering rendering)
+		public RenderingSystem(Rendering rendering)
 		{
 			_rendering = rendering;
 		}

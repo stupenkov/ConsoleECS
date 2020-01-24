@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ECS.Drawing;
 using ECS.Numerics;
 
 namespace ECS.ConsoleUI
@@ -10,15 +11,16 @@ namespace ECS.ConsoleUI
 	[UpdateBefore(typeof(RenderingSystem))]
 	public class AutoSizeSystem : SystemBase
 	{
+		
 		public override void OnUpdate()
 		{
 			Entities.Foreach((Entity etity, TransformComponent transform, SpriteComponent sprite) =>
+			{
+				if (transform.Autosize && transform.Size == Vector2.Zero)
 				{
-					if (transform.Autosize && transform.Size == Vector2.Zero)
-					{
-						transform.Size = sprite.Bitmap.Size;
-					}
-				});
+					transform.Size = sprite.Bitmap.Size;
+				}
+			});
 		}
 	}
 }
