@@ -6,6 +6,7 @@ using ECS.ConsoleUI;
 
 namespace ConsolePaint.Systems
 {
+	[DisableCreation]
 	public class BrushSystem : SystemBase
 	{
 		public override void OnUpdate()

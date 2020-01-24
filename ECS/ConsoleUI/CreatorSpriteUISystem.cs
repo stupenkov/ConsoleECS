@@ -9,12 +9,13 @@ using ECS;
 
 namespace ECS.ConsoleUI
 {
+	[DisableCreation]
 	public class CreatorSpriteUISystem : SystemBase
 	{
 		public override void OnUpdate()
 		{
 			Entities.Foreach(
-				(Entity entity, SpriteComponent sprite, DecorationUIComponent decor, TransformComponent transform) =>
+				(Entity entity, SpriteComponent sprite, DecorationUIComponentTest decor, TransformComponent transform) =>
 				{
 					if (!decor.Border.IsDefault)
 					{
@@ -23,21 +24,14 @@ namespace ECS.ConsoleUI
 
 					sprite.Bitmap = new Bitmap(transform.Size);
 					PaintBitmap(sprite.Bitmap, decor);
-					CursorZone zone = CreateCursorZone(transform, decor);
+					CursorZoneComponent zone = CreateCursorZone(transform, decor);
 					entity.AddComponent(zone);
-					entity.RemoveComponent<DecorationUIComponent>();
-				});
-
-			// Lable sprite ctreator
-			Entities.Foreach((Entity entity, LableComponent lable) =>
-			{
-				Bitmap bitmap = Bitmap.CreateFromText(lable.Text, lable.Mask);
-				entity.AddComponent(new SpriteComponent { Bitmap = bitmap });
-			});
+					entity.RemoveComponent<DecorationUIComponentTest>();
+				});		
 
 		}
 
-		private void PaintBitmap(Bitmap bitmap, DecorationUIComponent decoration)
+		private void PaintBitmap(Bitmap bitmap, DecorationUIComponentTest decoration)
 		{
 			bitmap.FillColor(decoration.BackgroundColor);
 			Pixel pixel = decoration.Border;
@@ -67,7 +61,7 @@ namespace ECS.ConsoleUI
 			}
 		}
 
-		private CursorZone CreateCursorZone(TransformComponent transform, DecorationUIComponent decor)
+		private CursorZoneComponent CreateCursorZone(TransformComponent transform, DecorationUIComponentTest decor)
 		{
 			int x = transform.Position.X;
 			int y = transform.Position.Y;
@@ -82,7 +76,7 @@ namespace ECS.ConsoleUI
 				h -= 1;
 			}
 
-			CursorZone zone = new CursorZone
+			CursorZoneComponent zone = new CursorZoneComponent
 			{
 				Zone = new Rectangle(x, y, w, h)
 			};

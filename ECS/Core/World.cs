@@ -10,9 +10,9 @@ namespace ECS
 {
 	public class World
 	{
-		private List<ISystem> _renderingSystemsGroup = new List<ISystem>();
 		private List<ISystem> _inputSystemsGroup = new List<ISystem>();
 		private List<ISystem> _updateSystemsGroup = new List<ISystem>();
+		private List<ISystem> _renderingSystemsGroup = new List<ISystem>();
 
 		public World()
 		{
@@ -48,7 +48,6 @@ namespace ECS
 			_updateSystemsGroup.ForEach(x => x.Execute());
 			_renderingSystemsGroup.ForEach(x => x.Execute());
 			_inputSystemsGroup.ForEach(x => x.Execute());
-
 			CreateDebugInfo();
 		}
 
@@ -162,10 +161,28 @@ namespace ECS
 		private void CreateAllSystems()
 		{
 			IEnumerable<Type> allSystems = GetAllTypesSystems();
-
 			foreach (var type in allSystems)
 			{
-				List<ISystem> systems = SelectGroupSystems(type);
+				List<ISystem> groupSystems = SelectGroupSystems(type);
+				ISystem systemInstance = CreateSystem(type);
+				groupSystems.Add(systemInstance);
+			}
+
+			// TODO: Автоматический поиск группы системы по UpdateBeforeAttribute и UpdateAfterAttribute.
+			SortSystemsInGroup(ref _inputSystemsGroup);
+			SortSystemsInGroup(ref _updateSystemsGroup);
+			SortSystemsInGroup(ref _renderingSystemsGroup);
+		}
+
+		private void SortSystemsInGroup(ref List<ISystem> unsortGroup)
+		{
+			List<ISystem> sortGroup = new List<ISystem>();
+
+			int counter = 0;
+			while (unsortGroup.Count > 0)
+			{
+				ISystem system = unsortGroup[counter++];
+				Type type = system.GetType();
 
 				UpdateBeforeAttribute beforeAttr =
 					type.GetCustomAttribute(typeof(UpdateBeforeAttribute)) as UpdateBeforeAttribute;
@@ -173,26 +190,59 @@ namespace ECS
 				UpdateAfterAttribute afterAttr =
 					type.GetCustomAttribute(typeof(UpdateAfterAttribute)) as UpdateAfterAttribute;
 
-				if (beforeAttr != null && afterAttr != null)
+				if (beforeAttr == null && afterAttr == null)
 				{
-					throw new Exception($"Нельзя применять атрибуты {nameof(UpdateBeforeAttribute)} и" +
-						$"{nameof(UpdateAfterAttribute)} вместе.");
+					sortGroup.Add(system);
+					unsortGroup.Remove(system);
+					counter = 0;
 				}
-
-				int indexInsert = systems.Count;
-				if (beforeAttr != null)
+				else if (beforeAttr != null && afterAttr != null)
 				{
-					indexInsert = systems.FindIndex(s => s.GetType() == beforeAttr.SystemType) - 1;
+					int findIndexBefore = sortGroup.FindIndex(s => s.GetType() == beforeAttr.SystemType);
+					int findIndexAfter = sortGroup.FindIndex(s => s.GetType() == beforeAttr.SystemType);
+					if (findIndexBefore == -1 || findIndexAfter == -1)
+					{
+						continue;
+					}
+
+					if (findIndexBefore > findIndexAfter)
+					{
+						throw new Exception($"Неправильный порядок систем before: {beforeAttr.SystemType} " +
+							$"и after:{afterAttr.SystemType} в системе: {system.GetType().Name}");
+					}
+
+					sortGroup.Insert(findIndexAfter + 1, system);
+					unsortGroup.Remove(system);
+					counter = 0;
 				}
 				else if (afterAttr != null)
 				{
-					indexInsert = systems.FindIndex(s => s.GetType() == afterAttr.SystemType) + 1;
+					int findIndexAfter = sortGroup.FindIndex(s => s.GetType() == afterAttr.SystemType);
+					if (findIndexAfter == -1)
+					{
+						continue;
+					}
+
+					sortGroup.Insert(findIndexAfter + 1, system);
+					unsortGroup.Remove(system);
+					counter = 0;
 				}
+				else if (beforeAttr != null)
+				{
+					int findIndexBefore = sortGroup.FindIndex(s => s.GetType() == beforeAttr.SystemType);
+					if (findIndexBefore == -1)
+					{
+						continue;
+					}
 
-				ISystem systemInstance = CreateSystem(type);
-
-				systems.Insert(indexInsert, systemInstance);
+					int insertIndex = findIndexBefore - 1 < 0 ? 0 : findIndexBefore - 1;
+					sortGroup.Insert(insertIndex, system);
+					unsortGroup.Remove(system);
+					counter = 0;
+				}
 			}
+
+			unsortGroup = sortGroup;
 		}
 
 		/// <summary>

@@ -17,6 +17,7 @@ namespace ConsolePaint
 		private Entity _menuList;
 		private LayoutUI _layoutUI = new LayoutUI();
 		private UICreator _UICreator;
+		private Entity _textEdit;
 
 		protected override void Inject(DependencyInjection injection)
 		{
@@ -30,15 +31,18 @@ namespace ConsolePaint
 			_canvas = EntityManager.CreateEntity("Canvas");
 			_UICreator = new UICreator(world);
 			_menuList = EntityManager.CreateEntity("MenuList");
+			_textEdit = EntityManager.CreateEntity("TextEdit");
 		}
 
 		protected override void ConfigureEntities()
 		{
 			ConfigureCanvas();
-			Entity lbBackgrd = _UICreator.CreateLabel("Background color:");
-			Entity clbrBackgrd = _UICreator.CreateColorBar(new Vector3(18, 0, 0));
-			Entity lbTextColor = _UICreator.CreateLabel("Text color:", new Vector2(0, 2));
-			Entity clbrTextColor = _UICreator.CreateColorBar(new Vector3(18, 2, 0));
+			Entity btnMenu = _UICreator.CreateButton(new Vector3(0, 0, 0), "Menu");
+			Entity lbBackgrd = _UICreator.CreateLabel("Background color:", new Vector2(0,5));
+			Entity clbrBackgrd = _UICreator.CreateColorBar(new Vector3(18, 5, 1));
+			Entity lbTextColor = _UICreator.CreateLabel("Text color:", new Vector2(0, 7));
+			Entity clbrTextColor = _UICreator.CreateColorBar(new Vector3(18, 7, 0));
+
 
 			_menuList.AddComponents(
 				new TransformComponent
@@ -64,10 +68,21 @@ namespace ConsolePaint
 						ColorText = ConsoleColor.DarkRed
 					}
 				},
-				new DecorationUIComponent
+				new DecorationUIComponentTest
 				{
-					
+
 				});
+
+			//_textEdit.AddComponents(
+			//	new TransformComponent
+			//	{
+			//		Position = new Vector3(0, 0, 30000)
+			//	},
+			//	new TextEditComponent
+			//	{
+			//		Mask = new ColorMask { Background = ConsoleColor.Red }
+			//	}
+			//	);
 		}
 
 		private void ConfigureCanvas()
@@ -83,7 +98,7 @@ namespace ConsolePaint
 			_canvas.AddComponents(
 				new TransformComponent { Position = new Vector3(0, 5, 0) },
 				new SpriteComponent { Bitmap = canvasBitmap },
-				new ActiveComponent(),
+				//new ActiveComponent(),
 				new BrushComponent { Pixel = new Pixel { Color = ConsoleColor.Red } },
 				canvasNavigate,
 				new CanvasComponent());

@@ -6,6 +6,7 @@ using ECS.Drawing;
 
 namespace ECS.ConsoleUI
 {
+	[DisableCreation]
 	public class StepperUISystem : SystemBase
 	{
 		public override void OnUpdate()

@@ -3,6 +3,8 @@ using ECS.Input;
 
 namespace ECS.ConsoleUI
 {
+	[DisableCreation]
+
 	[UpdateAfter(typeof(InputSystem))]
 	public class NavigateSystem : SystemBase
 	{

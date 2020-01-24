@@ -9,6 +9,7 @@ using ECS.ConsoleUI;
 
 namespace ConsolePaint.Systems
 {
+	[DisableCreation]
 	public class SavingSystem : SystemBase
 	{
 		public override void OnUpdate()

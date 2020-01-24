@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace ECS.Numerics
 {
@@ -12,6 +13,11 @@ namespace ECS.Numerics
 		{
 			X = x;
 			Y = y;
+		}
+
+		public bool IsInRectangle(Rectangle rectangle)
+		{
+			return X >= rectangle.Left && X < rectangle.Right && Y >= rectangle.Top && Y < rectangle.Bottom;
 		}
 
 		public static Vector2 One => new Vector2 { X = 1, Y = 1 };

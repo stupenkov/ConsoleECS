@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace ECS
 {
 	[Serializable]
-	public class Entity : ISerializable
+	public class Entity
 	{
 		private static int IdCounter = 0;
 		[NonSerialized]
@@ -20,7 +20,7 @@ namespace ECS
 
 		public int Id { get; }
 
-		public string Name { get; internal set; }
+		public string Name { get; internal set; } = string.Empty;
 
 		public Entity AddComponent(IComponentData component)
 		{
@@ -72,15 +72,6 @@ namespace ECS
 		public override string ToString()
 		{
 			return $"Name: {Name}, ID: {Id}";
-		}
-
-		public void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			info.AddValue("Name", Name);
-		}
-		protected Entity(SerializationInfo info, StreamingContext context)
-		{
-			Name = info.GetString("Name");
 		}
 	}
 }

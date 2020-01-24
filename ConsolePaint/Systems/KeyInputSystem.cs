@@ -8,6 +8,7 @@ using ECS.Input;
 
 namespace ConsolePaint.Systems
 {
+	[DisableCreation]
 	public class KeyInputSystem : SystemBase
 	{
 		public override void OnUpdate()

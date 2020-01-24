@@ -4,6 +4,9 @@ using System.Text;
 
 namespace ECS.Drawing
 {
+	/// <summary>
+	/// Представляет цвет текста и фона.
+	/// </summary>
 	[Serializable]
 	public struct ColorMask
 	{

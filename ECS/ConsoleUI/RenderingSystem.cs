@@ -7,8 +7,7 @@ using ECS.Numerics;
 
 namespace ECS.ConsoleUI
 {
-	//[DisableCreation]
-	[GroupRenderingSystemsAttribute]
+	[GroupRenderingSystems]
 	internal class RenderingSystem : SystemBase
 	{
 		private IRendering _rendering;
@@ -22,19 +21,10 @@ namespace ECS.ConsoleUI
 		{
 			Entities
 				.Has(typeof(TransformComponent))
-				.OrderBy(x => x.GetComponent<TransformComponent>().Position.Y)
+				.Exclude(typeof(HiddenComponent))
+				.OrderBy(x => x.GetComponent<TransformComponent>().Position.Z)
 				.Foreach((Entity etity, TransformComponent transform, SpriteComponent sprite) =>
 				{
-					if (transform.Position.Z < 0)
-					{
-						return;
-					}
-
-					if (transform.Size == Vector2.Zero)
-					{
-						transform.Size = sprite.Bitmap.Size;
-					}
-
 					_rendering.AddBitmap(transform.Position.ToVector2(), sprite.Bitmap);
 				});
 

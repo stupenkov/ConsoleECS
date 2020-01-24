@@ -7,7 +7,9 @@ using ECS.Drawing;
 
 namespace ECS.ConsoleUI
 {
-	public class MenuListCreationSystem : SystemBase
+	[GroupRenderingSystems]
+	[UpdateBefore(typeof(AutoSizeSystem))]
+	public class MenuListUISystem : SystemBase
 	{
 		public override void OnUpdate()
 		{

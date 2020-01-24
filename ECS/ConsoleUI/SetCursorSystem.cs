@@ -2,6 +2,7 @@
 
 namespace ECS.ConsoleUI
 {
+	[DisableCreation]
 	public class SetCursorSystem : SystemBase
 	{
 		public override void OnUpdate()

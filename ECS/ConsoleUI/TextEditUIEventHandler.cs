@@ -6,13 +6,14 @@ using ECS.Input;
 
 namespace ECS.ConsoleUI
 {
-	public class UIEventHandlerSystem : SystemBase
+	public class TextEditUIEventHandler : SystemBase
 	{
 		public override void OnUpdate()
 		{
 			Entities.Has(typeof(ActiveComponent)).Foreach((Entity entity, TextEditComponent textEdit) =>
 			{
-				Console.ReadLine();
+				Console.BackgroundColor = textEdit.Mask.Background;
+				textEdit.Text = Console.ReadLine();
 			});
 		}
 	}
