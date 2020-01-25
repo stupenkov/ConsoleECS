@@ -85,6 +85,8 @@ namespace ECS.Drawing
 			});
 		}
 
+		public void AddBitmap(Vector2 position, Bitmap bitmap) => AddBitmap(position.X, position.Y, bitmap);
+
 		public void SetPixel(int x, int y, ReturnPixel action)
 		{
 			action.Invoke(ref map[x, y]);

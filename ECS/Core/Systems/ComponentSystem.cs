@@ -3,15 +3,15 @@ using ECS.Input;
 
 namespace ECS
 {
-	public abstract class SystemBase : ISystem
+	public abstract class ComponentSystem : IComponentSystem
 	{
-		public IEnumerable<Entity> Entities => WorldState.Entities;
+		public IEnumerable<Entity> Entities => World.Entities;
 
 		public KeyBoard Input { get; internal set; }
 
 		public bool Enable { get; set; } = true;
 
-		internal World WorldState { get; set; }
+		public World World { get; internal set; }
 
 		public virtual void OnStart()
 		{
@@ -19,7 +19,7 @@ namespace ECS
 
 		public abstract void OnUpdate();
 
-		void ISystem.Execute()
+		void IComponentSystem.Execute()
 		{
 			if (Enable)
 			{
@@ -27,7 +27,7 @@ namespace ECS
 			}
 		}
 
-		void ISystem.Start()
+		void IComponentSystem.Start()
 		{
 			if (Enable)
 			{

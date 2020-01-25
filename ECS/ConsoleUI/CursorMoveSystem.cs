@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace ECS.ConsoleUI
 {
-	[GroupInputSystems]
+	[UpdateInGroup(typeof(InputSystemGroup))]
 	[UpdateAfter(typeof(InputSystem))]
-	public class CursorMoveSystem : SystemBase
+	public class CursorMoveSystem : ComponentSystem
 	{
 		public override void OnUpdate()
 		{

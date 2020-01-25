@@ -7,8 +7,8 @@ using ECS.Numerics;
 
 namespace ECS.ConsoleUI
 {
-	[GroupRenderingSystems]
-	internal class RenderingSystem : SystemBase
+	[UpdateInGroup(typeof(RenderingSystemGroup))]
+	internal class RenderingSystem : ComponentSystem
 	{
 		private Rendering _rendering;
 
@@ -17,15 +17,25 @@ namespace ECS.ConsoleUI
 			_rendering = rendering;
 		}
 
+		public override void OnStart()
+		{
+			Entity window = World.EntityManager.CreateEntity("Window");
+			window.AddComponent(new WindowComponent { Size = new Vector2(_rendering.WidthBuffer, _rendering.HeightBuffer) });
+		}
+
 		public override void OnUpdate()
 		{
+			Bitmap background = new Bitmap(_rendering.WidthBuffer, _rendering.HeightBuffer);
+			background.FillColor(ConsoleColor.White);
+
 			Entities
 				.Has(typeof(TransformComponent))
 				.Exclude(typeof(HiddenComponent))
 				.OrderBy(x => x.GetComponent<TransformComponent>().Position.Z)
-				.Foreach((Entity etity, TransformComponent transform, SpriteComponent sprite) =>
+				.Foreach((Entity entity, TransformComponent transform, SpriteComponent sprite) =>
 				{
-					_rendering.AddBitmap(transform.Position.ToVector2(), sprite.Bitmap);
+					background.AddBitmap(transform.Position.ToVector2(), sprite.Bitmap);
+					_rendering.AddBitmap(0, 0, background);
 				});
 
 			_rendering.Render();

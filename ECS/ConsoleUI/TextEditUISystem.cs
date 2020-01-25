@@ -5,9 +5,8 @@ using ECS.Drawing;
 
 namespace ECS.ConsoleUI
 {
-	[GroupRenderingSystems]
-	[UpdateBefore(typeof(AutoSizeSystem))]
-	public class TextEditUISystem : SystemBase
+	[UpdateInGroup(typeof(CreationUIGroup))]
+	public class TextEditUISystem : ComponentSystem
 	{
 		public override void OnUpdate()
 		{

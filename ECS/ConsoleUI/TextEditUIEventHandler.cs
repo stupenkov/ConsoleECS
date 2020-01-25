@@ -6,7 +6,8 @@ using ECS.Input;
 
 namespace ECS.ConsoleUI
 {
-	public class TextEditUIEventHandler : SystemBase
+	[DisableCreation]
+	public class TextEditUIEventHandler : ComponentSystem
 	{
 		public override void OnUpdate()
 		{

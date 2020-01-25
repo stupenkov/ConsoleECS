@@ -3,8 +3,8 @@ using ECS.Input;
 
 namespace ECS.ConsoleUI
 {
-	[GroupInputSystems]
-	public class InputSystem : SystemBase
+	[UpdateInGroup(typeof(InputSystemGroup))]
+	public class InputSystem : ComponentSystem
 	{
 		public override void OnUpdate()
 		{

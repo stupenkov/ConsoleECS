@@ -7,9 +7,9 @@ using ECS.Numerics;
 
 namespace ECS.ConsoleUI
 {
-	[GroupRenderingSystems]
-	[UpdateBefore(typeof(RenderingSystem))]
-	public class AutoSizeSystem : SystemBase
+	[UpdateInGroup(typeof(TransformGroup))]
+	//[UpdateBefore(typeof(RenderingSystem))]
+	public class AutoSizeSystem : ComponentSystem
 	{
 		
 		public override void OnUpdate()

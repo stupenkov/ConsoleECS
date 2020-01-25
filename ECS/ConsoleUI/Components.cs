@@ -44,7 +44,7 @@ namespace ECS.ConsoleUI
 
 	public class CommandComponent : IComponentData { public string CommandName; }
 
-	//public class InnerComponent: IComponentData { public Entity Parent; }
+	public class InnerComponent: IComponentData { public Entity Parent; }
 
 	// Base components.
 	public class TransformComponent : IComponentData { public Vector3 Position; public Vector2 Size; public bool Autosize = true; public bool Center; }
@@ -52,4 +52,5 @@ namespace ECS.ConsoleUI
 	public class NavigateComponent : IComponentData { public Dictionary<ConsoleKey, Entity> Navigate = new Dictionary<ConsoleKey, Entity>(); }
 	public class ActiveComponent : IComponentData { public Entity PreviousActive; }
 	public class HiddenComponent : IComponentData { public bool Hidden; }
+	public class WindowComponent : IComponentData { public Vector2 Size; }
 }

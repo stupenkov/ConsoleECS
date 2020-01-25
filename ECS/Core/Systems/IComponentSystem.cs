@@ -1,6 +1,6 @@
 ﻿namespace ECS
 {
-	public interface ISystem
+	public interface IComponentSystem
 	{
 		bool Enable { get; set; }
 

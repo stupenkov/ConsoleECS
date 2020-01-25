@@ -7,9 +7,8 @@ using ECS.Numerics;
 
 namespace ECS.ConsoleUI
 {
-	[GroupRenderingSystems]
-	[UpdateBefore(typeof(AutoSizeSystem))]
-	public class ButtonUISystem : SystemBase
+	[UpdateInGroup(typeof(CreationUIGroup))]
+	public class ButtonUISystem : ComponentSystem
 	{
 		public override void OnUpdate()
 		{
@@ -29,6 +28,11 @@ namespace ECS.ConsoleUI
 				bitmap.AddBitmap(0, properties.Padding.Top, textBitmap);
 
 				entity.AddComponent(new SpriteComponent { Bitmap = bitmap });
+
+				if (transform.Autosize && transform.Size == Vector2.Zero)
+				{
+					transform.Size = bitmap.Size;
+				}
 			});
 		}
 	}

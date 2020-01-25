@@ -4,7 +4,8 @@ using System.Text;
 
 namespace ECS
 {
-	public class GroupUpdateSystemsAttribute : Attribute
+	//[DisableCreation]
+	internal class RootSystemGroup : ComponentSystemGroup
 	{
 	}
 }

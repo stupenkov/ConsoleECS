@@ -5,13 +5,12 @@ using System.Text;
 using ECS;
 using ECS.Drawing;
 using ECS.Numerics;
+using ECS.ConsoleUI;
 
 namespace ECS.ConsoleUI
 {
-	[GroupRenderingSystems]
-	//[UpdateAfter(typeof(AutoSizeSystem))]
-	[UpdateBefore(typeof(CentrSystem))]
-	public class ListItemsUISystem : SystemBase
+	[UpdateInGroup(typeof(CreationUIGroup))]
+	public class ListItemsUISystem : ComponentSystem
 	{
 		public override void OnUpdate()
 		{
@@ -22,8 +21,11 @@ namespace ECS.ConsoleUI
 					//ColorMask colorMask = isContainsCursorHover ? properties.ActiveColors : properties.Colors;
 					int width = 0;
 					int height = 0;
+
 					foreach (var item in listItems.Items)
 					{
+						item.AddComponent(new InnerComponent { Parent = entity });
+
 						TransformComponent transformItem = item.GetComponent<TransformComponent>();
 						if (width < transformItem.Size.X)
 						{
@@ -44,7 +46,11 @@ namespace ECS.ConsoleUI
 					Bitmap bitmap = new Bitmap(width, height);
 					bitmap.FillColor(properties.Colors.Background);
 					transform.Size = new Vector2(width, height);
+
+					WindowComponent window = Entities.Has(typeof(WindowComponent)).FirstOrDefault().GetComponent<WindowComponent>();
+					window.SetPositionCenter(ref transform);
 					entity.AddComponent(new SpriteComponent { Bitmap = bitmap });
+
 				});
 		}
 	}

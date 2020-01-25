@@ -6,9 +6,9 @@ using ECS.Numerics;
 
 namespace ECS.ConsoleUI
 {
-	[GroupRenderingSystems]
-	[UpdateBefore(typeof(RenderingSystem))]
-	public class CentrSystem : SystemBase
+	[UpdateInGroup(typeof(TransformGroup))]
+	[UpdateAfter(typeof(AutoSizeSystem))]
+	public class CentrSystem : ComponentSystem
 	{
 		private Rendering _rendering;
 

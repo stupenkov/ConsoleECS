@@ -6,7 +6,7 @@ namespace ECS.ConsoleUI
 	[DisableCreation]
 
 	[UpdateAfter(typeof(InputSystem))]
-	public class NavigateSystem : SystemBase
+	public class NavigateSystem : ComponentSystem
 	{
 		public override void OnUpdate()
 		{

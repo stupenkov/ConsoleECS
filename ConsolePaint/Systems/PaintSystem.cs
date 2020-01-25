@@ -8,7 +8,7 @@ using ECS.ConsoleUI;
 namespace ConsolePaint.Systems
 {
 	[DisableCreation]
-	public class PaintSystem : SystemBase
+	public class PaintSystem : ComponentSystem
 	{
 		public override void OnUpdate()
 		{

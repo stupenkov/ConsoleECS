@@ -79,7 +79,7 @@ namespace ECS.ConsoleUI
 			return entity;
 		}
 
-		public Entity CreateListButton(Vector3 position, int countItems)
+		public Entity CreateListButton(string name, Vector3 position, int countItems)
 		{
 			List<Entity> buttons = new List<Entity>(countItems);
 			for (int i = 0; i < countItems; i++)
@@ -91,7 +91,7 @@ namespace ECS.ConsoleUI
 				buttons.Add(button);
 			}
 
-			Entity entity = _entityManager.CreateEntity($"ListButtons");
+			Entity entity = _entityManager.CreateEntity(name);
 			entity.AddComponents(
 				new TransformComponent { Position = position },
 				new ListItemsComponent { Items = buttons },

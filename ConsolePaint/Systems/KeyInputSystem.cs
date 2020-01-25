@@ -9,7 +9,7 @@ using ECS.Input;
 namespace ConsolePaint.Systems
 {
 	[DisableCreation]
-	public class KeyInputSystem : SystemBase
+	public class KeyInputSystem : ComponentSystem
 	{
 		public override void OnUpdate()
 		{

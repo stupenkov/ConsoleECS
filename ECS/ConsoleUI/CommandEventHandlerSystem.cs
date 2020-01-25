@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace ECS.ConsoleUI
 {
-	[GroupInputSystems]
+	[UpdateInGroup(typeof(InputSystemGroup))]
 	[UpdateAfter(typeof(InputSystem))]
-	public class CommandEventHandlerSystem : SystemBase
+	public class CommandEventHandlerSystem : ComponentSystem
 	{
 		public override void OnUpdate()
 		{
@@ -22,6 +23,11 @@ namespace ECS.ConsoleUI
 					if (command.CommandName == "commandTest0")
 					{
 						Debug.Print(command.CommandName);
+					}
+
+					if (command.CommandName=="MenuOpen")
+					{
+						Entities.FirstOrDefault(x => x.Name == "MainMenu").RemoveComponent<HiddenComponent>();
 					}
 				});
 		}
