@@ -7,6 +7,8 @@ namespace ECS.ConsoleUI
 	[UpdateInGroup(typeof(RenderingSystemGroup))]
 	[UpdateAfter(typeof(CreationUIGroup))]
 	[UpdateBefore(typeof(RenderingSystem))]
+	//[UpdateAfter(typeof(RenderingSystem))]
+	//[UpdateBefore(typeof(CreationUIGroup))]
 	public class TransformGroup : ComponentSystemGroup
 	{
 	}

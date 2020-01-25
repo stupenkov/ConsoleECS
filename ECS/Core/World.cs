@@ -13,7 +13,6 @@ namespace ECS
 		private RootSystemGroup _rootSystemGroup = new RootSystemGroup();
 		private List<ComponentSystemGroup> _allGroups = new List<ComponentSystemGroup>();
 
-
 		public World()
 		{
 			EntityManager = new EntityManager(this);
@@ -42,9 +41,8 @@ namespace ECS
 			{
 				SortSystems(group);
 			}
-			//_updateSystemsGroup.ForEach(x => x.Start());
-			//_renderingSystemsGroup.ForEach(x => x.Start());
-			//_inputSystemsGroup.ForEach(x => x.Start());
+
+			_rootSystemGroup.OnStart();
 		}
 
 		private void SortSystems(ComponentSystemGroup systemGroup)
@@ -56,33 +54,35 @@ namespace ECS
 			bool dirty = true;
 			while (dirty)
 			{
-				int counter = 0;
 				foreach (var system in group)
 				{
 					currentIndex = group.FindIndex(s => s.GetType() == system.GetType());
-					newIndex = -1;
-					counter++;
 					UpdateBeforeAttribute before = system.GetType().GetCustomAttributes<UpdateBeforeAttribute>().FirstOrDefault();
 					UpdateAfterAttribute after = system.GetType().GetCustomAttributes<UpdateAfterAttribute>().FirstOrDefault();
 
-					if (before == null && after == null)
+					int beforeIndex = -1;
+					int afterIndex = -1;
+
+					if (before != null)
 					{
-						continue;
-					}
-					else if (before != null && after != null)
-					{
-						int beforeIndex = group.FindIndex(s => s.GetType() == before.SystemType);
-						int afterIndex = group.FindIndex(s => s.GetType() == after.SystemType);
+						beforeIndex = group.FindIndex(s => s.GetType() == before.SystemType);
 						if (beforeIndex == -1)
 						{
 							throw new Exception($"Система {before.SystemType.Name} не найдена в группе {nameGroup}");
 						}
+					}
 
+					if (after != null)
+					{
+						afterIndex = group.FindIndex(s => s.GetType() == after.SystemType);
 						if (afterIndex == -1)
 						{
 							throw new Exception($"Система {after.SystemType.Name} не найдена в группе {nameGroup}");
 						}
+					}
 
+					if (beforeIndex > -1 && afterIndex > -1)
+					{
 						if (beforeIndex < afterIndex)
 						{
 							throw new Exception($"Неправильный порядок систем before: {before.SystemType} " +
@@ -93,43 +93,18 @@ namespace ECS
 						{
 							continue;
 						}
-						else if (afterIndex > currentIndex)
-						{
-							newIndex = afterIndex;
-							break;
-						}
-						else if (beforeIndex < currentIndex)
-						{
-							newIndex = beforeIndex - 1 < 0 ? 0 : beforeIndex - 1;
-							break;
-						}
 					}
-					else if (after != null)
-					{
-						int afterIndex = group.FindIndex(s => s.GetType() == after.SystemType);
-						if (afterIndex == -1)
-						{
-							throw new Exception($"Система {after.SystemType.Name} не найдена в группе {nameGroup}");
-						}
 
-						if (afterIndex > currentIndex)
-						{
-							newIndex = afterIndex;
-							break;
-						}
-					}
-					else if (before != null)
+					if (afterIndex > -1 && afterIndex > currentIndex)
 					{
-						int beforeIndex = group.FindIndex(s => s.GetType() == before.SystemType);
-						if (beforeIndex == -1)
-						{
-							throw new Exception($"Система {before.SystemType.Name} не найдена в группе {nameGroup}");
-						}
-						if (beforeIndex < currentIndex)
-						{
-							newIndex = beforeIndex - 1 < 0 ? 0 : beforeIndex - 1;
-							break;
-						}
+						newIndex = afterIndex;
+						break;
+					}
+
+					if (beforeIndex > -1 && beforeIndex < currentIndex)
+					{
+						newIndex = beforeIndex - 1 < 0 ? 0 : beforeIndex - 1;
+						break;
 					}
 				}
 
@@ -138,7 +113,7 @@ namespace ECS
 					ComponentSystem system = group[currentIndex];
 					group.RemoveAt(currentIndex);
 					group.Insert(newIndex, system);
-					counter = 0;
+					newIndex = -1;
 					continue;
 				}
 
@@ -148,9 +123,7 @@ namespace ECS
 
 		internal void RunSystems()
 		{
-			//_updateSystemsGroup.ForEach(x => x.Execute());
-			//_renderingSystemsGroup.ForEach(x => x.Execute());
-			//_inputSystemsGroup.ForEach(x => x.Execute());
+			_rootSystemGroup.OnUpdate();
 			CreateDebugInfo();
 		}
 
@@ -296,6 +269,7 @@ namespace ECS
 			{
 				ComponentSystem system = (ComponentSystem)Injection.InstanceObject(type);
 				system.World = this;
+				system.Input = Input;
 				instanceSystems.Add(system);
 			}
 
