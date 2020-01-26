@@ -55,6 +55,11 @@ namespace ECS.Input
 			}
 		}
 
+		public static void Reset()
+		{
+			cursorPos = Vector2.Zero;
+		}
+
 		public static void MoveLeft()
 		{
 			if (!Enable)

@@ -14,7 +14,7 @@ namespace ECS.ConsoleUI
 		
 		public override void OnUpdate()
 		{
-			Entities.Foreach((Entity etity, TransformComponent transform, SpriteComponent sprite) =>
+			Entities.Foreach((Entity entity, TransformComponent transform, SpriteComponent sprite) =>
 			{
 				if (transform.Autosize && transform.Size == Vector2.Zero)
 				{

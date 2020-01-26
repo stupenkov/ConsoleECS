@@ -42,7 +42,7 @@ namespace ECS.ConsoleUI
 		public int SelectedIndex;
 	}
 
-	public class CommandComponent : IComponentData { public string CommandName; }
+	public class CommandComponent : IComponentData { public string Command; public Entity Entity; }
 
 	public class InnerComponent: IComponentData { public Entity Parent; }
 

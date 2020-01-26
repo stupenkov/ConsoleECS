@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using ECS.Drawing;
+using ECS.Input;
+using ECS.Numerics;
 
 namespace ECS.ConsoleUI
 {
@@ -10,24 +13,47 @@ namespace ECS.ConsoleUI
 	[UpdateAfter(typeof(InputSystem))]
 	public class CommandEventHandlerSystem : ComponentSystem
 	{
+		private Rendering _rendering;
+		private readonly UICreator _uICreator;
+
+		public CommandEventHandlerSystem(Rendering rendering, UICreator uICreator)
+		{
+			_rendering = rendering;
+			_uICreator = uICreator;
+		}
+
 		public override void OnUpdate()
 		{
 			Entities.Has(typeof(CursorHoverComponent))
 				.Foreach((Entity entity, CommandComponent command) =>
 				{
-					if (Input.Key != ConsoleKey.Enter)
+					if (Input.Key == ConsoleKey.Enter)
 					{
-						return;
-					}
+						if (command.Command == "VisibleToggel")
+						{
+							if (command.Entity.ContainsComponent<HiddenComponent>())
+							{
+								command.Entity.RemoveComponent<HiddenComponent>();
+							}
+							else
+							{
+								command.Entity.AddComponent<HiddenComponent>();
+							}
 
-					if (command.CommandName == "commandTest0")
-					{
-						Debug.Print(command.CommandName);
-					}
+							return;
+						}
 
-					if (command.CommandName=="MenuOpen")
-					{
-						Entities.FirstOrDefault(x => x.Name == "MainMenu").RemoveComponent<HiddenComponent>();
+						if (command.Command == "NewFile")
+						{
+							Entity parent = entity.GetComponent<InnerComponent>().Parent;
+							parent.AddComponent<HiddenComponent>();
+
+							Entity textEdit = _uICreator.CreateTextEdit(new Vector3(5, 5, 10), 10);
+
+							_rendering.SetView(150, 20);
+							Cursor.Reset();
+							return;
+						}
 					}
 				});
 		}

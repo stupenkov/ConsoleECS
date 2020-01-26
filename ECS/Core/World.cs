@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Text;
 using ECS.Input;
 
@@ -16,7 +15,7 @@ namespace ECS
 		public World()
 		{
 			EntityManager = new EntityManager(this);
-			AddAllComponentsTypes();
+			AddAllComponentTypes();
 		}
 
 		public event EventHandler<List<DataDebug>> UpdateDataDebugs;
@@ -45,6 +44,10 @@ namespace ECS
 			_rootSystemGroup.OnStart();
 		}
 
+		/// <summary>
+		/// Сортирует системы в группах.
+		/// </summary>
+		/// <param name="systemGroup">Группа для сортировки.</param>
 		private void SortSystems(ComponentSystemGroup systemGroup)
 		{
 			List<ComponentSystem> group = systemGroup.Systems;
@@ -128,7 +131,7 @@ namespace ECS
 		}
 
 		/// <summary>
-		/// Возвращает все типы систем из подключенных сборок.
+		/// Возвращает все типы систем из подключенных сборок, которые соответствуют типу <see cref="ComponentSystem"/>.
 		/// </summary>
 		private static IEnumerable<Type> GetAllTypesSystems()
 		{
@@ -184,6 +187,107 @@ namespace ECS
 			.SelectMany(x => x.GetTypes())
 			.Where(x => x.GetInterface(nameof(IComponentData)) != null);
 
+		/// <summary>
+		/// Создает экземпляр системы по ее типу и производит инъекцию.
+		/// </summary>
+		/// <param name="type">Тип системы.</param>
+		/// <returns>Созданная система.</returns>
+		private ComponentSystem CreateSystem(Type type)
+		{
+			Type t = type;
+			while (t.BaseType != typeof(ComponentSystem))
+			{
+				if (t.BaseType == typeof(object))
+				{
+					throw new Exception($"Система не наследует тип: {typeof(ComponentSystem)}");
+				}
+
+				t = t.BaseType;
+			}
+
+			ComponentSystem instanceObject = (ComponentSystem)Injection.InstanceObject(type);
+			instanceObject.World = this;
+			instanceObject.Input = Input;
+			return instanceObject;
+		}
+
+		/// <summary>
+		/// Создает экземпляры всех систем и группирует их.
+		/// </summary>
+		private void CreateAllSystems()
+		{
+			List<ComponentSystem> instanceSystems = InstanceSystems();
+
+			_allGroups = instanceSystems.Where(x => x.GetType().BaseType == typeof(ComponentSystemGroup)).Cast<ComponentSystemGroup>().ToList();
+
+			_rootSystemGroup = (RootSystemGroup)instanceSystems.FirstOrDefault(x => x.GetType() == typeof(RootSystemGroup));
+
+			List<ComponentSystem> removeSystems = new List<ComponentSystem>();
+			while (instanceSystems.Count > 0)
+			{
+				foreach (var system in instanceSystems)
+				{
+					if (system.GetType() == typeof(RootSystemGroup))
+					{
+						removeSystems.Add(system);
+						continue;
+					}
+
+					UpdateInGroupAttribute group = system.GetType().GetCustomAttribute<UpdateInGroupAttribute>();
+
+					ComponentSystemGroup findGroup = null;
+					if (group != null)
+					{
+						findGroup = (ComponentSystemGroup)instanceSystems.Find(x => group.GroupType == x.GetType());
+					}
+
+					if (findGroup == null)
+					{
+						findGroup = (ComponentSystemGroup)instanceSystems.Find(x => typeof(UpdateSystemGroup) == x.GetType());
+						if (findGroup == null)
+						{
+							throw new Exception($"Не найдена системная группа {nameof(UpdateSystemGroup)}");
+						}
+					}
+
+					findGroup.AddSystem(system);
+					removeSystems.Add(system);
+					continue;
+				}
+
+				foreach (var system in removeSystems)
+				{
+					instanceSystems.Remove(system);
+				}
+			}
+
+			removeSystems.Clear();
+		}
+
+		/// <summary>
+		/// Создает экземпляры всех систем.
+		/// </summary>
+		private List<ComponentSystem> InstanceSystems()
+		{
+			List<ComponentSystem> instanceSystems = new List<ComponentSystem>();
+			IEnumerable<Type> allTypeSystems = GetAllTypesSystems().ToList();
+			foreach (var type in allTypeSystems)
+			{
+				ComponentSystem system = CreateSystem(type);
+				instanceSystems.Add(system);
+			}
+
+			return instanceSystems;
+		}
+
+		private void AddAllComponentTypes()
+		{
+			foreach (var type in GetAllComponentTypes())
+			{
+				Components.Add(type, new Dictionary<int, IComponentData>());
+			}
+		}
+
 		private void CreateDebugInfo()
 		{
 			var s = Components.SelectMany(x => x.Value).GroupBy(x => x.Key).Select(x => new
@@ -238,192 +342,6 @@ namespace ECS
 			}
 
 			UpdateDataDebugs?.Invoke(this, DataDebugs);
-		}
-
-		/// <summary>
-		/// Создает экземпляр системы по ее типу и производит инъекцию.
-		/// </summary>
-		/// <param name="type">Тип системы.</param>
-		/// <returns>Созданная система.</returns>
-		private IComponentSystem CreateSystem(Type type)
-		{
-			if (type.BaseType != typeof(ComponentSystem))
-			{
-				throw new Exception($"Система не наследует тип: {typeof(ComponentSystem)}");
-			}
-
-			object instanceObject = Injection.InstanceObject(type);
-			(instanceObject as ComponentSystem).World = this;
-			(instanceObject as ComponentSystem).Input = Input;
-			return (IComponentSystem)instanceObject;
-		}
-
-		/// <summary>
-		/// Добавляет экземпляры всех систем в список.
-		/// </summary>
-		private void CreateAllSystems()
-		{
-			IEnumerable<Type> allTypeSystems = GetAllTypesSystems().ToList();
-			List<ComponentSystem> instanceSystems = new List<ComponentSystem>();
-			foreach (var type in allTypeSystems)
-			{
-				ComponentSystem system = (ComponentSystem)Injection.InstanceObject(type);
-				system.World = this;
-				system.Input = Input;
-				instanceSystems.Add(system);
-			}
-
-			_allGroups = instanceSystems.Where(x => x.GetType().BaseType == typeof(ComponentSystemGroup)).Cast<ComponentSystemGroup>().ToList();
-
-			_rootSystemGroup = (RootSystemGroup)instanceSystems.FirstOrDefault(x => x.GetType() == typeof(RootSystemGroup));
-
-			List<ComponentSystem> removeSystems = new List<ComponentSystem>();
-			while (instanceSystems.Count > 0)
-			{
-				foreach (var system in instanceSystems)
-				{
-					if (system.GetType() == typeof(RootSystemGroup))
-					{
-						removeSystems.Add(system);
-						continue;
-					}
-
-					UpdateInGroupAttribute group = system.GetType().GetCustomAttribute<UpdateInGroupAttribute>();
-
-					ComponentSystemGroup findGroup = null;
-					if (group != null)
-					{
-						findGroup = (ComponentSystemGroup)instanceSystems.Find(x => group.GroupType == x.GetType());
-					}
-
-					if (findGroup == null)
-					{
-						findGroup = (ComponentSystemGroup)instanceSystems.Find(x => typeof(UpdateSystemGroup) == x.GetType());
-						if (findGroup == null)
-						{
-							throw new Exception($"Не найдена системная группа {nameof(UpdateSystemGroup)}");
-						}
-					}
-
-					findGroup.AddSystem(system);
-					removeSystems.Add(system);
-					continue;
-				}
-
-				foreach (var system in removeSystems)
-				{
-					instanceSystems.Remove(system);
-				}
-			}
-
-			removeSystems.Clear();
-		}
-
-		private void SortSystemsInGroup(ref List<IComponentSystem> unsortGroup)
-		{
-			List<IComponentSystem> sortGroup = new List<IComponentSystem>();
-
-			int counter = 0;
-			while (unsortGroup.Count > 0)
-			{
-				IComponentSystem system = unsortGroup[counter++];
-				Type type = system.GetType();
-
-				UpdateBeforeAttribute beforeAttr =
-					type.GetCustomAttribute(typeof(UpdateBeforeAttribute)) as UpdateBeforeAttribute;
-
-				UpdateAfterAttribute afterAttr =
-					type.GetCustomAttribute(typeof(UpdateAfterAttribute)) as UpdateAfterAttribute;
-
-				if (beforeAttr == null && afterAttr == null)
-				{
-					sortGroup.Add(system);
-					unsortGroup.Remove(system);
-					counter = 0;
-				}
-				else if (beforeAttr != null && afterAttr != null)
-				{
-					int findIndexBefore = sortGroup.FindIndex(s => s.GetType() == beforeAttr.SystemType);
-					int findIndexAfter = sortGroup.FindIndex(s => s.GetType() == afterAttr.SystemType);
-					if (findIndexBefore == -1 || findIndexAfter == -1)
-					{
-						continue;
-					}
-
-					if (findIndexBefore < findIndexAfter)
-					{
-						throw new Exception($"Неправильный порядок систем before: {beforeAttr.SystemType} " +
-							$"и after:{afterAttr.SystemType} в системе: {system.GetType().Name}");
-					}
-
-					sortGroup.Insert(findIndexAfter + 1, system);
-					unsortGroup.Remove(system);
-					counter = 0;
-				}
-				else if (afterAttr != null)
-				{
-					int findIndexAfter = sortGroup.FindIndex(s => s.GetType() == afterAttr.SystemType);
-					if (findIndexAfter == -1)
-					{
-						continue;
-					}
-
-					sortGroup.Insert(findIndexAfter + 1, system);
-					unsortGroup.Remove(system);
-					counter = 0;
-				}
-				else if (beforeAttr != null)
-				{
-					int findIndexBefore = sortGroup.FindIndex(s => s.GetType() == beforeAttr.SystemType);
-					if (findIndexBefore == -1)
-					{
-						continue;
-					}
-
-					int insertIndex = findIndexBefore - 1 < 0 ? 0 : findIndexBefore - 1;
-					sortGroup.Insert(insertIndex, system);
-					unsortGroup.Remove(system);
-					counter = 0;
-				}
-			}
-
-			unsortGroup = sortGroup;
-		}
-
-		/// <summary>
-		/// Выбирает группу систем для типа.
-		/// </summary>
-		/// <param name="type">Группа выбирается в зависимости от атрибутов этого типа.</param>
-		/// <returns>Группа систем.</returns>
-		//private List<IComponentSystem> SelectGroupSystems(Type type)
-		//{
-		//	List<IComponentSystem> systems = _updateSystemsGroup;
-		//	if (type.GetCustomAttribute(typeof(GroupInputSystemsAttribute)) != null)
-		//	{
-		//		systems = _inputSystemsGroup;
-		//	}
-		//	else if (type.GetCustomAttribute(typeof(GroupRenderingSystemsAttribute)) != null)
-		//	{
-		//		systems = _renderingSystemsGroup;
-		//	}
-
-		//	if (systems.Any(x => x.GetType() == type))
-		//	{
-		//		throw new Exception($"Попытка повторного добавления системы {type.Name}");
-		//	}
-
-		//	return systems;
-		//}
-
-		/// <summary>
-		/// Добавляет все типы компонентов в словарь.
-		/// </summary>
-		private void AddAllComponentsTypes()
-		{
-			foreach (var type in GetAllComponentTypes())
-			{
-				Components.Add(type, new Dictionary<int, IComponentData>());
-			}
 		}
 	}
 }

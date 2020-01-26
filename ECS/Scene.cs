@@ -13,7 +13,7 @@ namespace ECS
 
 		protected EntityManager EntityManager { get; }
 
-		internal World World { get; } = new World();
+		public World World { get; } = new World();
 
 		protected abstract void Inject(DependencyInjection injection);
 

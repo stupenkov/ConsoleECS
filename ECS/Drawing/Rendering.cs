@@ -52,6 +52,11 @@ namespace ECS.Drawing
 			}
 		}
 
+		public void SetView(int width, int height)
+		{
+			InitializeView(width, height);
+		}
+
 		public void InitializeView(int width, int height)
 		{
 			WidthBuffer = width;

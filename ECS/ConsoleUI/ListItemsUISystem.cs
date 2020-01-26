@@ -17,8 +17,6 @@ namespace ECS.ConsoleUI
 			Entities
 				.Foreach((Entity entity, ListItemsComponent listItems, PropertiesUIComponent properties, TransformComponent transform) =>
 				{
-					//bool isContainsCursorHover = entity.ContainsComponent<CursorHoverComponent>();
-					//ColorMask colorMask = isContainsCursorHover ? properties.ActiveColors : properties.Colors;
 					int width = 0;
 					int height = 0;
 
@@ -47,8 +45,8 @@ namespace ECS.ConsoleUI
 					bitmap.FillColor(properties.Colors.Background);
 					transform.Size = new Vector2(width, height);
 
-					WindowComponent window = Entities.Has(typeof(WindowComponent)).FirstOrDefault().GetComponent<WindowComponent>();
-					window.SetPositionCenter(ref transform);
+					//WindowComponent window = Entities.Has(typeof(WindowComponent)).FirstOrDefault().GetComponent<WindowComponent>();
+					//window.SetPositionCenter(ref transform);
 					entity.AddComponent(new SpriteComponent { Bitmap = bitmap });
 
 				});

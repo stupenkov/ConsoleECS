@@ -11,6 +11,7 @@ namespace ECS.ConsoleUI
 	internal class RenderingSystem : ComponentSystem
 	{
 		private Rendering _rendering;
+		private Entity window;
 
 		public RenderingSystem(Rendering rendering)
 		{
@@ -19,14 +20,14 @@ namespace ECS.ConsoleUI
 
 		public override void OnStart()
 		{
-			Entity window = World.EntityManager.CreateEntity("Window");
-			window.AddComponent(new WindowComponent { Size = new Vector2(_rendering.WidthBuffer, _rendering.HeightBuffer) });
+			window = World.EntityManager.CreateEntity("Window");
 		}
 
 		public override void OnUpdate()
 		{
 			Bitmap background = new Bitmap(_rendering.WidthBuffer, _rendering.HeightBuffer);
 			background.FillColor(ConsoleColor.White);
+			window.AddComponent(new WindowComponent { Size = new Vector2(_rendering.WidthBuffer, _rendering.HeightBuffer) });
 
 			Entities
 				.Has(typeof(TransformComponent))

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ECS;
 using ECS.Drawing;
@@ -18,21 +19,26 @@ namespace ECS.ConsoleUI
 			_entityManager = world.EntityManager;
 		}
 
-		public Entity CreateButton(Vector3 position, string caption)
+		public Entity CreateButton(Vector3 position, string caption, string command = null, Entity entity = null)
 		{
-			Entity entity = _entityManager.CreateEntity("Button");
-			entity.AddComponents(
+			Entity ent = _entityManager.CreateEntity("Button");
+
+			ent.AddComponents(
 				new TransformComponent { Position = position },
 				new ButtonComponent { Caption = caption },
 				new PropertiesUIComponent
 				{
 					Padding = new Indent(1, 2),
 					ActiveColors = new ColorMask { Background = ConsoleColor.Green, ColorText = ConsoleColor.DarkBlue }
-				}
+				},
+				new CommandComponent { Command = command, Entity = entity }
 				);
 
-			return entity;
+			return ent;
 		}
+
+		public Entity CreateButton(string caption, string command = null, Entity entity = null) =>
+			CreateButton(new Vector3(), caption, command, entity);
 
 		public Entity CreateColorBar(Vector3 position)
 		{
@@ -64,38 +70,39 @@ namespace ECS.ConsoleUI
 			return CreateLabel(text, Vector2.Zero);
 		}
 
-		public Entity CreateTextEdit(Vector2 position, int lenght)
+		public Entity CreateTextEdit(Vector3 position, int lenght, string command = null, Entity entity = null)
 		{
-			Entity entity = _entityManager.CreateEntity($"TextEdit");
-			entity.AddComponents(
+			Entity ent = _entityManager.CreateEntity($"TextEdit");
+			ent.AddComponents(
 				new TransformComponent
 				{
-					Position = new Vector3(position.X, position.Y, 0),
+					Position = position,
 					Size = new Vector2(lenght, 1)
 				},
 				new SpriteComponent(),
-				new TextEditComponent());
+				new TextEditComponent(),
+				new CommandComponent
+				{
+					Command = command,
+					Entity = entity,
+				}
 
-			return entity;
+				);
+
+			return ent;
 		}
 
-		public Entity CreateListButton(string name, Vector3 position, int countItems)
+		public Entity CreateListItems(
+			string name,
+			Vector3 position,
+			List<Entity> entities)
 		{
-			List<Entity> buttons = new List<Entity>(countItems);
-			for (int i = 0; i < countItems; i++)
-			{
-				Entity button = CreateButton(new Vector3(), $"item {i}");
-				button.GetComponent<PropertiesUIComponent>().Padding = new Indent(0, 2);
-				CommandComponent command = new CommandComponent { CommandName = $"commandTest{i}" };
-				button.AddComponent(command);
-				buttons.Add(button);
-			}
-
 			Entity entity = _entityManager.CreateEntity(name);
 			entity.AddComponents(
 				new TransformComponent { Position = position },
-				new ListItemsComponent { Items = buttons },
+				new ListItemsComponent { Items = entities },
 				new PropertiesUIComponent());
+
 			return entity;
 		}
 
