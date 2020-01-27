@@ -26,7 +26,7 @@ namespace ECS.ConsoleUI
 		public override void OnUpdate()
 		{
 			Bitmap background = new Bitmap(_rendering.WidthBuffer, _rendering.HeightBuffer);
-			background.FillColor(ConsoleColor.White);
+			background.FillBackgroundColor(ConsoleColor.White);
 			window.AddComponent(new WindowComponent { Size = new Vector2(_rendering.WidthBuffer, _rendering.HeightBuffer) });
 
 			Entities

@@ -62,7 +62,7 @@ namespace ConsolePaint
 		private void ConfigureCanvas()
 		{
 			Bitmap canvasBitmap = new Bitmap(20, 10);
-			canvasBitmap.FillColor(ConsoleColor.White);
+			canvasBitmap.FillBackgroundColor(ConsoleColor.White);
 
 			NavigateComponent canvasNavigate = new NavigateComponent();
 			canvasNavigate.Navigate = new Dictionary<ConsoleKey, Entity>();

@@ -69,7 +69,7 @@ namespace ECS.Drawing
 			});
 		}
 
-		public void FillColor(ConsoleColor color)
+		public void FillBackgroundColor(ConsoleColor color)
 		{
 			Foreach((ref Pixel p) =>
 			{

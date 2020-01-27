@@ -24,7 +24,7 @@ namespace ECS.ConsoleUI
 				int height = properties.Padding.Top + properties.Padding.Bottom + textBitmap.Size.Y;
 
 				Bitmap bitmap = new Bitmap(new Vector2(sb.Length, height));
-				bitmap.FillColor(colorMask.Background);
+				bitmap.FillBackgroundColor(colorMask.Background);
 				bitmap.AddBitmap(0, properties.Padding.Top, textBitmap);
 
 				entity.AddComponent(new SpriteComponent { Bitmap = bitmap });

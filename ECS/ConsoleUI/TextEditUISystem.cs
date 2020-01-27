@@ -15,12 +15,10 @@ namespace ECS.ConsoleUI
 	{
 		public override void OnUpdate()
 		{
-			Entities.Foreach((Entity entity, TextEditComponent textEdit, TransformComponent transform) =>
+			Entities.Foreach((Entity entity, TextEditComponent textEdit, TransformComponent transform, PropertiesUIComponent properties) =>
 			{
-				Bitmap bitmap = new Bitmap(textEdit.Length, 1);
 				if (textEdit.InputMode)
 				{
-					//Cursor.SetPosition(transform.Position.ToVector2());
 					if (textEdit.DisplayText == null)
 					{
 						textEdit.DisplayText = new DisplayText(textEdit.Length);
@@ -57,9 +55,10 @@ namespace ECS.ConsoleUI
 				}
 
 				Bitmap textBitmap = Bitmap.CreateFromText(textEdit.DisplayText.GetDislplayText());
+				Bitmap bitmap = new Bitmap(textEdit.Length, 1);
 				bitmap.AddBitmap(0, 0, textBitmap);
+				bitmap.FillBackgroundColor(properties.Colors.Background);
 
-				bitmap.FillColor(textEdit.Mask.Background);
 				entity.AddComponent(new SpriteComponent { Bitmap = bitmap });
 			});
 		}

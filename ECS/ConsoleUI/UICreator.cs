@@ -81,6 +81,10 @@ namespace ECS.ConsoleUI
 				},
 				new SpriteComponent(),
 				new TextEditComponent(),
+				new PropertiesUIComponent
+				{
+					Colors = new ColorMask { Background = ConsoleColor.DarkBlue, ColorText = ConsoleColor.White }
+				},
 				new CommandComponent
 				{
 					Command = command,

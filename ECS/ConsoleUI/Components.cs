@@ -17,7 +17,7 @@ namespace ECS.ConsoleUI
 	// UI components
 	public class ModalDialogComponent : IComponentData { public List<Entity> InnerEntities = new List<Entity>(); }
 
-	public class TextEditComponent : IComponentData { public bool InputMode;  public DisplayText DisplayText; public int Length = 6; public ColorMask Mask = ColorMask.Default; }
+	public class TextEditComponent : IComponentData { public bool InputMode;  public DisplayText DisplayText; public int Length = 6; }
 
 	public class StepperComponent : IComponentData { public Pixel Mask; }
 

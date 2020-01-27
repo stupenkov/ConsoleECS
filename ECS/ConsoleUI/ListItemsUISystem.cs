@@ -42,7 +42,7 @@ namespace ECS.ConsoleUI
 					height += properties.Padding.Top + properties.Padding.Bottom;
 
 					Bitmap bitmap = new Bitmap(width, height);
-					bitmap.FillColor(properties.Colors.Background);
+					bitmap.FillBackgroundColor(properties.Colors.Background);
 					transform.Size = new Vector2(width, height);
 
 					//WindowComponent window = Entities.Has(typeof(WindowComponent)).FirstOrDefault().GetComponent<WindowComponent>();
