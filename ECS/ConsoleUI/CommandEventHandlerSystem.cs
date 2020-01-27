@@ -48,10 +48,8 @@ namespace ECS.ConsoleUI
 							Entity parent = entity.GetComponent<InnerComponent>().Parent;
 							parent.AddComponent<HiddenComponent>();
 
-							Entity textEdit = _uICreator.CreateTextEdit(new Vector3(5, 5, 10), 10);
-
-							_rendering.SetView(150, 20);
-							Cursor.Reset();
+							Entity textEdit = _uICreator.CreateTextEdit(new Vector3(0, 6, 10), 10);
+							textEdit.GetComponent<TextEditComponent>().InputMode = true;
 							return;
 						}
 					}

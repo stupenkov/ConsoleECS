@@ -14,7 +14,6 @@ namespace ECS.ConsoleUI
 			Entities.Has(typeof(ActiveComponent)).Foreach((Entity entity, TextEditComponent textEdit) =>
 			{
 				Console.BackgroundColor = textEdit.Mask.Background;
-				textEdit.Text = Console.ReadLine();
 			});
 		}
 	}

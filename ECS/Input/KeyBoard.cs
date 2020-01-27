@@ -2,6 +2,12 @@
 
 namespace ECS.Input
 {
+	public enum InputMode
+	{
+		Key,
+		Char
+	}
+
 	public class KeyBoard
 	{
 		public KeyBoard()
@@ -15,13 +21,27 @@ namespace ECS.Input
 		public ConsoleKey KeyShift { get; private set; }
 		public char KeyChar { get; private set; }
 
-		public char GetChar()
-		{
-			return (char)Console.Read();
-		}
+		public InputMode InputMode { get; set; }
 
-		public void GetKey()
+		public bool Enable { get; set; } = true;
+
+		public void GetInput()
 		{
+			if (!Enable)
+			{
+				return;
+			}
+
+			switch (InputMode)
+			{
+				case InputMode.Key:
+					break;
+				case InputMode.Char:
+					break;
+				default:
+					break;
+			}
+
 			ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 			KeyChar = keyInfo.KeyChar;
 			Key = 0;

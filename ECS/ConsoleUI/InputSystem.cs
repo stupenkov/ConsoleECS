@@ -8,7 +8,7 @@ namespace ECS.ConsoleUI
 	{
 		public override void OnUpdate()
 		{
-			Input.GetKey();
+			Input.GetInput();
 
 			switch (Input.Key)
 			{

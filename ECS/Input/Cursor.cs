@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using ECS.Numerics;
 
 namespace ECS.Input
@@ -7,12 +8,13 @@ namespace ECS.Input
 	{
 		private static Vector2 cursorPos;
 		private static Vector2 begin;
-		private static Vector2 end = new Vector2(Console.BufferWidth - 1, Console.BufferHeight - 1);
+		private static Vector2 end;
 		private static bool _enable = true;
 
 		static Cursor()
 		{
 			TranslateToOrigin();
+			ResetRectangel();
 		}
 
 		public static bool Enable
@@ -55,8 +57,24 @@ namespace ECS.Input
 			}
 		}
 
-		public static void Reset()
+		public static Rectangle Rectangle
 		{
+			get => new Rectangle(Begin.X, Begin.Y, End.X - Begin.X, End.Y - Begin.Y);
+			set
+			{
+				Begin = new Vector2(value.Left, value.Top);
+				End = new Vector2(value.Right, value.Bottom);
+			}
+		}
+
+		public static void ResetRectangel()
+		{
+			begin = Vector2.Zero;
+			end = new Vector2(Console.BufferWidth - 1, Console.BufferHeight - 1);
+		}
+
+		public static void ResetPosition()
+		{			
 			cursorPos = Vector2.Zero;
 		}
 
